@@ -32,6 +32,8 @@ public class RegexUtils {
         return mismatch(code, RegexPatterns.VERIFY_CODE_REGEX);
     }
 
+    public static boolean isPasswordInvalid(String password){return mismatch(password,RegexPatterns.PASSWORD_REGEX);}
+
     // 校验是否不符合正则格式
     private static boolean mismatch(String str, String regex){
         if (StrUtil.isBlank(str)) {

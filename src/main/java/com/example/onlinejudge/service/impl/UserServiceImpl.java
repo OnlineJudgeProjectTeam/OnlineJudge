@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -61,10 +62,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public R<User> register(String email, String username, String password, String code, String name, MultipartFile avatar) {
-        return null;
+    public R<String> register(String email, String username, String password, String code,String name) {
+        String cacheCode = stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY + email);
+        if (cacheCode == null || !cacheCode.equals(code)) {
+            // 不一致，报错
+            return R.error("验证码不一致");
+        }
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, username);
+        List<User> list = list(queryWrapper);
+        if (!list.isEmpty()) {
+            return R.error("用户名已存在");
+        }
+        if (!RegexUtils.isPasswordInvalid(password)) {
+            return R.error("密码格式不正确");
+        }
+        password = PasswordEncoder.encode(password);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setName(name);
+        save(user);
+        return R.success("注册成功");
     }
-
     @Override
     public R<UserDto> login(String username, String password) {
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();

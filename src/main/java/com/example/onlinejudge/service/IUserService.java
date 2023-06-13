@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 public interface IUserService extends IService<User> {
     R<String> sendCode(String phone);
 
-    R<User> register(String email, String username, String password, String code, String name, MultipartFile avatar);
+    R<String> register(String email, String username, String password, String code, String name);
 
     R<UserDto> login(String username, String password);
 

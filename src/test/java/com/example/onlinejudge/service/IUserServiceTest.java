@@ -18,4 +18,15 @@ public class IUserServiceTest {
         String email="1730523754@qq.com";
         userService.sendCode(email);
     }
+    @Test
+    public void sentCodeTest1() {
+        String email="1767390619@qq.com";
+        userService.sendCode(email);
+    }
+
+    @Test
+    public void register(){
+        String email = "1767390619@qq.com";
+        userService.register(email,"aahang","12345","yk3e","aa");
+    }
 }
