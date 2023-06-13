@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-06-13
  */
 public interface IProblemService extends IService<Problem> {
-
+    public String JavaJudge(String code,Integer userId,Integer problemId);
 }

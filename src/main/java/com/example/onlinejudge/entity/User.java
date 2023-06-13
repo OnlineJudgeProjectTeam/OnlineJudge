@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -23,7 +21,6 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("user")
-@ApiModel(value="User对象", description="")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +39,17 @@ public class User implements Serializable {
     private String avatar;
 
     private LocalDateTime createdTime;
+
+    private String school;
+
+    private String description;
+
+    /**
+     * 0代表女，1代表男
+     */
+    private Integer sex;
+
+    private String company;
 
 
 }

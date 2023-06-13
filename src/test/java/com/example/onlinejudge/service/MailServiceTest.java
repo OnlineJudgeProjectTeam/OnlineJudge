@@ -8,14 +8,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class IUserSeviceTest {
-
+public class MailServiceTest {
     @Autowired
-    private IUserService userService;
+    private MailService mailService;
 
     @Test
-    public void sentCodeTest() {
-        String email="1730523754@qq.com";
-        userService.sendCode(email);
+    public void sendVertifyCodeTest() {
+        String to = "1730523754@qq.com";
+        String title = "验证码";
+        String content = "123456";
+        mailService.sendVertifyCode(to, title, content);
     }
 }
