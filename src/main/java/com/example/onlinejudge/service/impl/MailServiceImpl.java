@@ -28,6 +28,5 @@ public class MailServiceImpl implements MailService {
         message.setSubject(title);  //邮件名
         message.setText(content);   //邮件内容（验证码）
         mailSender.send(message);
-        logger.info("已经发送");
     }
 }
