@@ -175,4 +175,39 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         stringRedisTemplate.expire(LOGIN_USER_KEY+token,LOGIN_USER_TTL, TimeUnit.MINUTES);
         return R.success(userDto);
     }
+
+    @Override
+    public User QueryById(Integer id) {
+        String key = CACHE_USER_KEY+id;
+        Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
+        if(userMap.isEmpty()){
+            User user = getById(id);
+            if(user==null){
+                user = new User();
+            }
+            Map<String, Object> userMap1 = BeanUtil.beanToMap(user, new HashMap<>(),
+                    CopyOptions.create()
+                            .setIgnoreNullValue(true)
+                            //在setFieldValueEditor中也需要判空
+                            .setFieldValueEditor((fieldName,fieldValue) -> {
+                                if (fieldValue == null){
+                                    fieldValue = "0";
+                                }else {
+                                    fieldValue = fieldValue + "";
+                                }
+                                return fieldValue;
+                            }));
+            //存储
+            stringRedisTemplate.opsForHash().putAll(CACHE_USER_KEY+id,userMap1);
+            //设置有效期
+            stringRedisTemplate.expire(CACHE_USER_KEY+id,CACHE_USER_TTL, TimeUnit.MINUTES);
+            return user;
+        }
+        if(!userMap.containsKey("id")||userMap.get("id")==""||userMap.get("id")=="0"){
+            return null;
+        }
+        User user = new User();
+        BeanUtil.copyProperties(userMap,user);
+        return user;
+    }
 }

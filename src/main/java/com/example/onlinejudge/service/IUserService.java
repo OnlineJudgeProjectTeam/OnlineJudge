@@ -24,4 +24,6 @@ public interface IUserService extends IService<User> {
     R<UserDto> login(String username, String password);
 
     R<UserDto> loginByCode(String email, String code);
+
+    User QueryById(Integer id);
 }

@@ -1,5 +1,6 @@
 package com.example.onlinejudge.service;
 
+import com.example.onlinejudge.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,12 @@ public class IUserServiceTest {
     public void register(){
         String email = "1767390619@qq.com";
         userService.register(email,"aahang","12345","yk3e","aa");
+    }
+
+    @Test
+    public void QueryByIdTest() {
+        Integer id=1;
+        User user = userService.QueryById(id);
+        System.out.println(user);
     }
 }

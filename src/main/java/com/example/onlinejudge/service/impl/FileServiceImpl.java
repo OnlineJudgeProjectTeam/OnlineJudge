@@ -9,7 +9,7 @@ import java.io.*;
 public class FileServiceImpl implements FileService {
 
     @Override
-    public Boolean fileCopy(String srcPath, String destPath) {
+    public Boolean fileCopy(String srcPath, String destPath,Boolean append) {
         FileReader fr = null;
         BufferedReader br = null;
         FileWriter fw = null;
@@ -17,14 +17,13 @@ public class FileServiceImpl implements FileService {
         try {
             fr = new FileReader(srcPath);
             br = new BufferedReader(fr);
-            fw = new FileWriter(destPath);
+            fw = new FileWriter(destPath,append);
             pw = new PrintWriter(fw);
             String temp = "";
             while ((temp = br.readLine()) != null) {
                 pw.println(temp);
                 pw.flush();
             }
-
         } catch (IOException e) {
             throw new RuntimeException("文件复制失败");
         } finally {
@@ -82,5 +81,33 @@ public class FileServiceImpl implements FileService {
             }
         }
         return true;
+    }
+
+    @Override
+    public String readFile(String path) {
+        FileReader fr = null;
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+            fr = new FileReader(path);
+            br = new BufferedReader(fr);
+            String temp = "";
+            while ((temp = br.readLine()) != null) {
+                sb.append(temp);
+                sb.append("\n");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("文件读取失败");
+        } finally {
+            try {
+                assert fr != null;
+                fr.close();
+                assert br != null;
+                br.close();
+            } catch (IOException e) {
+                throw new RuntimeException("文件关闭失败");
+            }
+        }
+        return sb.toString();
     }
 }
