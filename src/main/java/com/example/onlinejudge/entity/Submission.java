@@ -41,7 +41,10 @@ public class Submission implements Serializable {
     private Integer pass;
 
     @ApiModelProperty(value = "提交时间")
+
     private Integer executionTime;
+
+    private String difficulty;
 
 
 }

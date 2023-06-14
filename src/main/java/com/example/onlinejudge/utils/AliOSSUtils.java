@@ -33,6 +33,7 @@ public class AliOSSUtils {
 
         //防止覆盖
         String originalFilename = file.getOriginalFilename();
+        assert originalFilename != null;
         String filename = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
 
         //上传到OSS

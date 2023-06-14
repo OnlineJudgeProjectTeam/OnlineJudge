@@ -41,5 +41,7 @@ public class Solution implements Serializable {
 
     private LocalDateTime updatedTime;
 
+    private Integer language;
+
 
 }

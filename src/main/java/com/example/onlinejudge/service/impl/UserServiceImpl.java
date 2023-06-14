@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.common.R;
+import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.User;
 import com.example.onlinejudge.mapper.UserMapper;
@@ -14,11 +15,13 @@ import com.example.onlinejudge.utils.PasswordEncoder;
 import com.example.onlinejudge.utils.RegexUtils;
 import com.example.onlinejudge.utils.ValidateImageCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +42,12 @@ import static com.example.onlinejudge.utils.RedisConstants.*;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
     @Autowired
     MailService mailService;
+
+    @Value("${path.user}")
+    private String userFilePath;
 
 
     @Override
@@ -83,6 +90,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setPassword(password);
         user.setEmail(email);
         user.setName(name);
+        // 创建用户代码文件夹
+        String userCodeFolderPath = userFilePath +"/" + username;
+        File userCodeFolder = new File(userCodeFolderPath);
+        if (!userCodeFolder.exists()) {
+            userCodeFolder.mkdirs();
+        }
         save(user);
         return R.success("注册成功");
     }
@@ -177,6 +190,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public R<String> update(User user) {
+        user.setId(UserHolder.getUser().getId());
+        updateById(user);
+        return R.success("保存成功");
+    }
+
+    @Override
     public User QueryById(Integer id) {
         String key = CACHE_USER_KEY+id;
         Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
@@ -211,3 +231,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return user;
     }
 }
+
+
