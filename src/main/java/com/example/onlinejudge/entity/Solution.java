@@ -1,5 +1,6 @@
 package com.example.onlinejudge.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -42,6 +43,12 @@ public class Solution implements Serializable {
     private LocalDateTime updatedTime;
 
     private Integer language;
+
+    /**
+     * 是否点赞过了
+     */
+    @TableField(exist = false)
+    private Boolean isLike;
 
 
 }

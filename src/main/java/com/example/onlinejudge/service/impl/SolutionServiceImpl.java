@@ -1,11 +1,14 @@
 package com.example.onlinejudge.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.onlinejudge.common.R;
 import com.example.onlinejudge.common.Type;
 import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.SolutionDto;
+import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.entity.Solution;
 import com.example.onlinejudge.entity.User;
@@ -24,8 +27,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.onlinejudge.utils.RedisConstants.SOLUTION_LIKED_KEY;
 
@@ -124,6 +127,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             solutionDto.setProblemName(problem.getName());
             String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/"+getLanguageFolder(language)+ "/solution.md";
             String content = fileService.readFile(path);
+            isSolutionLiked(solution);
+            solutionDto.setIsLike(solution.getIsLike());
             solutionDto.setContent(content);
             solutionDtos.add(solutionDto);
         });
@@ -132,8 +137,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
-    public R likeSolution(Integer solutionId) {
-        Integer userId = UserHolder.getUser().getId();
+    public R likeSolution(Integer solutionId,Integer userId) {
+//       Integer userId = UserHolder.getUser().getId();
         // 判断当前登录用户是否已经点赞
         String key = SOLUTION_LIKED_KEY + solutionId;
         Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
@@ -153,6 +158,21 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         }
         return R.success("成功");
     }
+
+    private void isSolutionLiked(Solution solution){
+        // 1.获取登录用户
+        User user = UserHolder.getUser();
+        if (user == null) {
+            // 用户未登录，无需查询是否点赞
+            return;
+        }
+        Integer userId = user.getId();
+        // 2.判断当前登录用户是否已经点赞
+        String key = SOLUTION_LIKED_KEY + solution.getId();
+        Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
+        solution.setIsLike(score != null);
+    }
+
 
     // 根据题解信息获取文件路径
     private String getFilePath(Solution solution) {

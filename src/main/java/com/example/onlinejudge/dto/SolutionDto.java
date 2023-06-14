@@ -11,6 +11,7 @@ public class SolutionDto extends Solution {
     String problemName;
 
     public SolutionDto(Solution solution) {
+        this.setIsLike(solution.getIsLike());
         this.setId(solution.getId());
         this.setProblemId(solution.getProblemId());
         this.setUserId(solution.getUserId());
