@@ -28,14 +28,14 @@ public class FavoriteController {
     @Autowired
     private IFavoriteService favoriteService;
 
-    @GetMapping("/addFavorite")
+    @GetMapping("/add-favorite")
     @ApiOperation("添加/取消收藏")
     public void addFavorite(@ApiParam("题目id") Integer problemId){
         UserDto user = UserHolder.getUser();
         favoriteService.addFavorite(user.getId(), problemId);
     }
 
-    @GetMapping("/getFavoriteList")
+    @GetMapping("/get-favorite-list")
     @ApiOperation("获取收藏列表")
     public void getFavoriteList(@ApiParam("第几页") Integer pageNum,@ApiParam("每页几条数据") Integer pageSize,@ApiParam("导航页个数") Integer navSize){
         UserDto user = UserHolder.getUser();

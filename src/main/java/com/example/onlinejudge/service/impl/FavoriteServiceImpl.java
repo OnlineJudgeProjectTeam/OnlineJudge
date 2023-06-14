@@ -42,14 +42,14 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
         Favorite favorite = this.getOne(favoriteLambdaQueryWrapper);
         if(favorite!=null){
             this.removeById(favorite.getId());
-            problemService.update().setSql("likes = likes - 1").eq("id", problemId).update();
+            problemService.update().setSql("favorites = favorites - 1").eq("id", problemId).update();
             return true;
         }
         favorite = new Favorite();
         favorite.setUserId(userId);
         favorite.setProblemId(problemId);
         this.save(favorite);
-        problemService.update().setSql("likes = likes + 1").eq("id", problemId).update();
+        problemService.update().setSql("favorites = favorites + 1").eq("id", problemId).update();
         return true;
     }
 

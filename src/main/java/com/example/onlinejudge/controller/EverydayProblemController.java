@@ -26,7 +26,7 @@ public class EverydayProblemController {
     @Autowired
     private IEverydayProblemService everydayProblemService;
 
-    @GetMapping("getEveryProblem")
+    @GetMapping("get-everyday-problem")
     @ApiOperation("获取每日一题")
     public R<Problem> getEveryProblem(){
         Problem problem = everydayProblemService.getEverydayProblem();

@@ -96,4 +96,17 @@ public class IProblemServiceTest {
         Integer language = 0;
         System.out.println(problemService.getAnswer(problemId, language));
     }
+
+    @Test
+    public void getProblemDescriptionTest(){
+        Integer problemId = 1;
+        System.out.println(problemService.getProblemDescription(problemId));
+    }
+
+    @Test
+    public void getProblemTemplateTest(){
+        Integer problemId = 1;
+        Integer language = 0;
+        System.out.println(problemService.getProblemTemplate(problemId, language));
+    }
 }

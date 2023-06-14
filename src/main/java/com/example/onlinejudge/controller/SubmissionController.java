@@ -32,7 +32,7 @@ public class SubmissionController {
     @Autowired
     private ISubmissionService submissionService;
 
-    @GetMapping("/getAcRate")
+    @GetMapping("/get-ac-rate")
     @ApiOperation("获取通过率")
     public R<ACData> getAcRate(@ApiParam("用户id") Integer userId,@ApiParam("题目难度") String difficulty){
         if(difficulty==null){
@@ -42,7 +42,7 @@ public class SubmissionController {
         return R.success(acData);
     }
 
-    @GetMapping("/getSubmissionList")
+    @GetMapping("/get-submission-list")
     @ApiOperation("获取做题记录列表")
     public R getSubmissionList(@ApiParam("用户id") Integer userId,@ApiParam("第几页") Integer pageNum,@ApiParam("一页几条数据") Integer pageSize,@ApiParam("导航页个数") Integer navSize,@ApiParam("编程语言") Integer language,@ApiParam("难度") String difficulty,@ApiParam("是否通过") Integer pass,@ApiParam("起始时间") LocalDateTime startTime,@ApiParam("结束时间") LocalDateTime endTime){
         PageInfo<SubmissionDto> submissionList = submissionService.getSubmissionList(userId, pageNum, pageSize, navSize, language, difficulty, pass, startTime, endTime);

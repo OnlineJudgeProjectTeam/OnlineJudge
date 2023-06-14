@@ -38,7 +38,7 @@ public class UserController {
     @Autowired
     AliOSSUtils aliOSSUtils;
 
-    @GetMapping("/RegisterSend")
+    @GetMapping("/register-send")
     @ApiOperation("发送注册验证码")
     public R<String> RegisterSend(@ApiParam("注册邮箱") String email){
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -51,38 +51,40 @@ public class UserController {
         return R.success("验证码已发送");
     }
 
-    @GetMapping("/LoginSend")
+    @GetMapping("/login-send")
     @ApiOperation("发送登录验证码")
     public R<String> LoginSend(@ApiParam("登录邮箱") String email){
         userService.sendCode(email);
         return R.success("验证码已发送");
     }
 
-    @PostMapping("/Register")
+    @PostMapping("/register")
     @ApiOperation("注册")
     public R<String> Register(@RequestBody @ApiParam("注册数据") UserCodeDto userCodeDto){
         return userService.register(userCodeDto.getEmail(), userCodeDto.getUsername(), userCodeDto.getPassword(), userCodeDto.getCode(), userCodeDto.getName());
     }
 
-    @PostMapping("/Login")
+    @PostMapping("/login")
     @ApiOperation("登录")
     public R<UserDto> Login(@RequestBody @ApiParam("登录数据") User user){
         return userService.login(user.getUsername(), user.getPassword());
     }
 
-    @PostMapping("/LoginByCode")
+    @PostMapping("/login-by-code")
     @ApiOperation("验证码登录")
     public R<UserDto> LoginByCode(@RequestBody @ApiParam("登录数据") UserCodeDto user){
         return userService.loginByCode(user.getEmail(), user.getCode());
     }
 
-    @GetMapping("/Logout")
+    @GetMapping("/logout")
     @ApiOperation("登出")
     public R<String> Logout(@ApiParam("用户id") Integer id){
         return userService.logout(id);
     }
+
     @PostMapping("/upload")
-    public R<String> upload(MultipartFile image) throws Exception {
+    @ApiOperation("上传头像")
+    public R<String> upload(@ApiParam("图片") MultipartFile image) throws Exception {
         String url = aliOSSUtils.upload(image);
         return R.success(url);
     }

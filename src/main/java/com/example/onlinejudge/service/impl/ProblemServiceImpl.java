@@ -343,7 +343,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     @Override
     public String getProblemDescription(Integer problemId) {
         Problem problem = QueryById(problemId);
-        String descriptionPath = problemPath+"/"+problem.getName()+"/description.txt";
+        String descriptionPath = problemPath+"/"+problem.getName()+"/description.md";
         return fileService.readFile(descriptionPath);
     }
 

@@ -14,6 +14,8 @@ public class ProblemDto extends Problem {
     private String description;
     @ApiModelProperty(value = "模板代码")
     private String template;
+    @ApiModelProperty(value = "用户是否收藏该题目")
+    private Integer isFavorite;
 
     public ProblemDto(Problem problem) {
         this.setId(problem.getId());
