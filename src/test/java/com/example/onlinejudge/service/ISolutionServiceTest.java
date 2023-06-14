@@ -72,13 +72,12 @@ public class ISolutionServiceTest {
 
     @Test
     public void getSolutionListTest(){
-        Integer userId = 1;
         Integer problemId = 1;
         Integer language = 0;
         Integer pageSize = 10;
         Integer pageNum = 1;
         Integer navSize = 5;
-        R<PageInfo<SolutionDto>> solutionList = solutionService.getSolutionList(userId,pageNum,pageSize,navSize, problemId, language);
+        R<PageInfo<SolutionDto>> solutionList = solutionService.getSolutionList(pageNum,pageSize,navSize, problemId, language);
         System.out.println(solutionList);
     }
 }

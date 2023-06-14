@@ -110,19 +110,19 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
-    public R<PageInfo<SolutionDto>> getSolutionList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize, Integer problemId,Integer language) {
+    public R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId,Integer language) {
         PageHelper.startPage(pageNum, pageSize);
         LambdaQueryWrapper<Solution> solutionLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        solutionLambdaQueryWrapper.eq(Solution::getUserId, userId);
         if (problemId != null) {
             solutionLambdaQueryWrapper.eq(Solution::getProblemId, problemId);
         }
         solutionLambdaQueryWrapper.orderByDesc(Solution::getCreatedTime);
         ArrayList<SolutionDto> solutionDtos = new ArrayList<>();
         HashMap<Integer, Problem> problemMap = problemMapper.getProblemMap();
-        User user = userService.QueryById(userId);
         List<Solution> list = list(solutionLambdaQueryWrapper);
         for(Solution solution:list){
+            Integer userId = solution.getUserId();
+            User user = userService.QueryById(userId);
             SolutionDto solutionDto = new SolutionDto(solution);
             Problem problem = problemMap.get(solution.getProblemId());
             solutionDto.setProblemName(problem.getName());

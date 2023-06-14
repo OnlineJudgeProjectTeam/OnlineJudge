@@ -35,6 +35,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     @Autowired
     private IUserService userService;
+    @Autowired
+    AliOSSUtils aliOSSUtils;
 
     @GetMapping("/RegisterSend")
     @ApiOperation("发送注册验证码")
@@ -79,8 +81,6 @@ public class UserController {
     public R<String> Logout(@ApiParam("用户id") Integer id){
         return userService.logout(id);
     }
-    @Autowired
-    AliOSSUtils aliOSSUtils;
     @PostMapping("/upload")
     public R<String> upload(MultipartFile image) throws Exception {
         String url = aliOSSUtils.upload(image);

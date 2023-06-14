@@ -1,12 +1,16 @@
 package com.example.onlinejudge.dto;
 
 import com.example.onlinejudge.entity.Submission;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@ApiModel(value = "SubmissionDto", description = "提交数据传输对象")
 public class SubmissionDto extends Submission {
+    @ApiModelProperty(value = "题目名称")
     String problemName;
 
     public SubmissionDto(Submission submission){

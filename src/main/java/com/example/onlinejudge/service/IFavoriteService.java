@@ -2,6 +2,7 @@ package com.example.onlinejudge.service;
 
 import com.example.onlinejudge.entity.Favorite;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.onlinejudge.entity.FavoriteDto;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -15,5 +16,5 @@ import com.github.pagehelper.PageInfo;
 public interface IFavoriteService extends IService<Favorite> {
     public Boolean addFavorite(Integer userId, Integer problemId);
 
-    PageInfo<Favorite> getFavoriteList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize);
+    PageInfo<FavoriteDto> getFavoriteList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize);
 }

@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author diandianjun
- * @since 2023-06-13
+ * @since 2023-06-14
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -39,6 +39,8 @@ public class Problem implements Serializable {
     private Integer timeLimit;
 
     private Integer memoryLimit;
+
+    private Integer favorites;
 
 
 }

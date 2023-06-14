@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author diandianjun
- * @since 2023-06-13
+ * @since 2023-06-14
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -26,7 +26,6 @@ import lombok.experimental.Accessors;
 public class Favorite implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;

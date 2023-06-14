@@ -74,11 +74,4 @@ public class ProblemController {
         Problem problem = problemService.getRandomProblem();
         return R.success(problem);
     }
-
-    @GetMapping("getEveryProblem")
-    @ApiOperation("获取每日一题")
-    public R<Problem> getEveryProblem(){
-        Problem problem = problemService.getRandomProblem();
-        return R.success(problem);
-    }
 }
