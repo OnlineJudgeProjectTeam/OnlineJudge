@@ -5,10 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "SolutionDto", description = "提交数据传输对象")
+@NoArgsConstructor
 public class SolutionDto extends Solution {
     @ApiModelProperty(value = "题目内容")
     String content;

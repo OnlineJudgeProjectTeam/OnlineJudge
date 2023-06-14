@@ -138,8 +138,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
-    public R likeSolution(Integer solutionId,Integer userId) {
-//       Integer userId = UserHolder.getUser().getId();
+    public R<String> likeSolution(Integer solutionId) {
+       Integer userId = UserHolder.getUser().getId();
         // 判断当前登录用户是否已经点赞
         String key = SOLUTION_LIKED_KEY + solutionId;
         Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
