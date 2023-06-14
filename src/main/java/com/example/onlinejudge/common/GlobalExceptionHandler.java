@@ -29,4 +29,10 @@ public class GlobalExceptionHandler {
         String message=exception.getMessage();
         return R.error(message);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public R<String> Exception(IllegalArgumentException exception){
+        String message=exception.getMessage();
+        return R.error(message);
+    }
 }

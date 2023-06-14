@@ -72,4 +72,27 @@ public class IProblemServiceTest {
         String result = problemService.CJudge(code, userId, problemId,1);
         System.out.println(result);
     }
+
+    @Test
+    public void getRandomProblemTest(){
+        System.out.println(problemService.getRandomProblem());
+    }
+
+    @Test
+    public void getProblemListTest(){
+        int pageNum = 1;
+        int pageSize = 1;
+        int navSize = 1;
+        String name = "两数之和";
+        String tags = "数组";
+        String difficulty = "困难";
+        System.out.println(problemService.getProblemList(pageNum, pageSize, navSize, name,tags, difficulty));
+    }
+
+    @Test
+    public void getAnswerTest(){
+        Integer problemId = 1;
+        Integer language = 0;
+        System.out.println(problemService.getAnswer(problemId, language));
+    }
 }

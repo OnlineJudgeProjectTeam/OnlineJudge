@@ -1,16 +1,21 @@
 package com.example.onlinejudge.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.onlinejudge.common.R;
 import com.example.onlinejudge.common.Type;
 import com.example.onlinejudge.common.UserHolder;
+import com.example.onlinejudge.dto.SolutionDto;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.entity.Solution;
 import com.example.onlinejudge.entity.User;
+import com.example.onlinejudge.mapper.ProblemMapper;
 import com.example.onlinejudge.mapper.SolutionMapper;
 import com.example.onlinejudge.service.FileService;
 import com.example.onlinejudge.service.ISolutionService;
 import com.example.onlinejudge.service.IUserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.example.onlinejudge.utils.RedisConstants.SOLUTION_LIKED_KEY;
 
@@ -35,6 +42,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
     @Autowired
     private ProblemServiceImpl problemService;
+    @Autowired
+    private ProblemMapper problemMapper;
 
     @Value("${path.user}")
     private String userFilePath;
@@ -71,7 +80,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
-    public R<String> deletSolution(Integer solutionId) throws IOException {
+    public R<String> deleteSolution(Integer solutionId) throws IOException {
         // 根据题解ID查询题解信息
         Solution solution = getById(solutionId);
         if (solution == null) {
@@ -98,6 +107,31 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
+    public R<PageInfo<SolutionDto>> getSolutionList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize, Integer problemId,Integer language) {
+        PageHelper.startPage(pageNum, pageSize);
+        LambdaQueryWrapper<Solution> solutionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        solutionLambdaQueryWrapper.eq(Solution::getUserId, userId);
+        if (problemId != null) {
+            solutionLambdaQueryWrapper.eq(Solution::getProblemId, problemId);
+        }
+        solutionLambdaQueryWrapper.orderByDesc(Solution::getCreatedTime);
+        ArrayList<SolutionDto> solutionDtos = new ArrayList<>();
+        HashMap<Integer, Problem> problemMap = problemMapper.getProblemMap();
+        User user = userService.QueryById(userId);
+        list(solutionLambdaQueryWrapper).forEach(solution -> {
+            SolutionDto solutionDto = new SolutionDto(solution);
+            Problem problem = problemMap.get(solution.getProblemId());
+            solutionDto.setProblemName(problem.getName());
+            String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/"+getLanguageFolder(language)+ "/solution.md";
+            String content = fileService.readFile(path);
+            solutionDto.setContent(content);
+            solutionDtos.add(solutionDto);
+        });
+        PageInfo<SolutionDto> solutionDtoPageInfo = new PageInfo<>(solutionDtos, navSize);
+        return R.success(solutionDtoPageInfo);
+    }
+
+    @Override
     public R likeSolution(Integer solutionId) {
         Integer userId = UserHolder.getUser().getId();
         // 判断当前登录用户是否已经点赞
@@ -121,18 +155,18 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     // 根据题解信息获取文件路径
-            private String getFilePath(Solution solution) {
+    private String getFilePath(Solution solution) {
     // 构建文件路径逻辑，根据题解的语言和其他属性来确定文件路径
-                User user = userService.getById(solution.getUserId());
-                Problem problem = problemService.getById(solution.getProblemId());
-                if (problem == null) {
-                    // 用户或题目不存在，处理相应的错误逻辑
-                    throw new IllegalArgumentException("题目不存在");
-                }
-                String Language = getLanguageFolder(solution.getLanguage());
-                String filePath = userFilePath + "/" + user.getUsername() + "/" + problem.getName() + "/" + Language ;
-               return filePath;
-           }
+        User user = userService.getById(solution.getUserId());
+        Problem problem = problemService.getById(solution.getProblemId());
+        if (problem == null) {
+            // 用户或题目不存在，处理相应的错误逻辑
+            throw new IllegalArgumentException("题目不存在");
+        }
+        String Language = getLanguageFolder(solution.getLanguage());
+        String filePath = userFilePath + "/" + user.getUsername() + "/" + problem.getName() + "/" + Language ;
+        return filePath;
+    }
 
 
     private String getLanguageFolder(int language) {

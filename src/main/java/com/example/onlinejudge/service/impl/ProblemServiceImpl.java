@@ -2,6 +2,7 @@ package com.example.onlinejudge.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.entity.User;
 import com.example.onlinejudge.mapper.ProblemMapper;
@@ -9,6 +10,8 @@ import com.example.onlinejudge.service.FileService;
 import com.example.onlinejudge.service.IProblemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.onlinejudge.service.IUserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,7 +22,9 @@ import javax.management.Query;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.onlinejudge.utils.RedisConstants.*;
@@ -283,5 +288,48 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Problem getRandomProblem() {
+        List<Problem> list = list();
+        int size = list.size();
+        Random random = new Random();
+        int index = random.nextInt(size);
+        return list.get(index);
+    }
+
+    @Override
+    public PageInfo<Problem> getProblemList(Integer pageNum, Integer pageSize, Integer navSize, String name, String tags, String difficulty) {
+        PageHelper.startPage(pageNum,pageSize);
+        LambdaQueryWrapper<Problem> problemLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if(name!=null&&!name.equals("")){
+            problemLambdaQueryWrapper.like(Problem::getName,name);
+        }
+        if(tags!=null&&!tags.equals("")){
+            problemLambdaQueryWrapper.like(Problem::getTags,tags);
+        }
+        if(difficulty!=null&&!difficulty.equals("")){
+            problemLambdaQueryWrapper.eq(Problem::getDifficulty,difficulty);
+        }
+        List<Problem> list = list(problemLambdaQueryWrapper);
+        return new PageInfo<>(list,navSize);
+    }
+
+    @Override
+    public String getAnswer(Integer problemId,Integer language) {
+        Problem problem = QueryById(problemId);
+        String answerPath="";
+        switch (language){
+            case 0:
+                answerPath = problemPath+"/"+problem.getName()+"/java"+"/answer.txt";
+                break;
+            case 1:
+                answerPath = problemPath+"/"+problem.getName()+"/c"+"/answer.txt";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + language);
+        }
+        return fileService.readFile(answerPath);
     }
 }

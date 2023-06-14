@@ -18,7 +18,12 @@ public class IFavoriteServiceTest {
     public void addFavoriteTest(){
         int userId = 1;
         int problemId = 1;
-        favoriteService.addFavorite(userId, problemId);
+        Boolean aBoolean = favoriteService.addFavorite(userId, problemId);
+        if(aBoolean) {
+            System.out.println("添加成功");
+        }else{
+            System.out.println("不能重复添加");
+        }
     }
 
     @Test

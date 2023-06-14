@@ -13,7 +13,7 @@ import com.github.pagehelper.PageInfo;
  * @since 2023-06-13
  */
 public interface IFavoriteService extends IService<Favorite> {
-    public void addFavorite(Integer userId, Integer problemId);
+    public Boolean addFavorite(Integer userId, Integer problemId);
 
     PageInfo<Favorite> getFavoriteList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize);
 }

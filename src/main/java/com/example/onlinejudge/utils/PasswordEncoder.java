@@ -28,6 +28,7 @@ public class PasswordEncoder {
         // 获取盐
         String salt = arr[0];
         // 比较
-        return encodedPassword.equals(encode(rawPassword, salt));
+        String encode = encode(rawPassword, salt);
+        return encodedPassword.equals(encode);
     }
 }

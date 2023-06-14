@@ -56,6 +56,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(!RegexUtils.isEmailInvalid(email)){
             return R.error("邮箱不正确");
         }
+        if(Boolean.TRUE.equals(stringRedisTemplate.hasKey(LOGIN_CODE_KEY + email))){
+            Long expire = stringRedisTemplate.getExpire(LOGIN_CODE_KEY + email, TimeUnit.SECONDS);
+            if(expire>840){
+                return R.error("验证码已发送，请勿重复发送，"+(expire-840)+"秒后可重新发送");
+            }
+        }
         //生成验证码
         String securityCode = ValidateImageCodeUtils.getSecurityCode();
         //将验证码保存到redis中
@@ -107,7 +113,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(user==null){
             return R.error("用户不存在");
         }
-        if(PasswordEncoder.matches(user.getPassword(),password)){
+        if(!PasswordEncoder.matches(user.getPassword(),password)){
             return R.error("密码错误");
         }
         String token = UUID.randomUUID().toString();

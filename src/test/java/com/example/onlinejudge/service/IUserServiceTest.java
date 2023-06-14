@@ -1,6 +1,8 @@
 package com.example.onlinejudge.service;
 
+import com.example.onlinejudge.common.R;
 import com.example.onlinejudge.entity.User;
+import com.example.onlinejudge.utils.PasswordEncoder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,8 @@ public class IUserServiceTest {
     @Test
     public void sentCodeTest() {
         String email="1730523754@qq.com";
-        userService.sendCode(email);
+        R<String> stringR = userService.sendCode(email);
+        System.out.println(stringR);
     }
     @Test
     public void sentCodeTest1() {
@@ -32,9 +35,24 @@ public class IUserServiceTest {
     }
 
     @Test
+    public void loginTest(){
+        String username = "admin";
+        String password = "123456";
+        System.out.println(userService.login(username,password));
+    }
+
+    @Test
+    public void loginByCodeTest(){
+        String email = "1730523754@qq.com";
+        String code = "2c5e";
+        System.out.println(userService.loginByCode(email,code));
+    }
+
+    @Test
     public void QueryByIdTest() {
         Integer id=1;
         User user = userService.QueryById(id);
         System.out.println(user);
     }
+
 }

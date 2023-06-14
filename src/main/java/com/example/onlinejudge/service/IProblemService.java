@@ -2,6 +2,7 @@ package com.example.onlinejudge.service;
 
 import com.example.onlinejudge.entity.Problem;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 
 /**
  * <p>
@@ -19,4 +20,7 @@ public interface IProblemService extends IService<Problem> {
     public String CJudge(String code,Integer userId,Integer problemId,Integer number);
     Boolean CCompile(String workingDirectory,Integer number);
     Boolean CRun(String workingDirectory,Integer number);
+    public Problem getRandomProblem();
+    public PageInfo<Problem> getProblemList(Integer pageNum, Integer pageSize, Integer navSize,String name, String tags, String difficulty);
+    public String getAnswer(Integer problemId,Integer language);
 }

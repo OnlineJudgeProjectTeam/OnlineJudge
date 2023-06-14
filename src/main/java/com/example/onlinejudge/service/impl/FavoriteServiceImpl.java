@@ -21,11 +21,18 @@ import org.springframework.stereotype.Service;
 public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> implements IFavoriteService {
 
     @Override
-    public void addFavorite(Integer userId, Integer problemId){
+    public Boolean addFavorite(Integer userId, Integer problemId){
+        LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        favoriteLambdaQueryWrapper.eq(Favorite::getUserId,userId);
+        favoriteLambdaQueryWrapper.eq(Favorite::getProblemId,problemId);
+        if(this.getOne(favoriteLambdaQueryWrapper)!=null){
+            return false;
+        }
         Favorite favorite = new Favorite();
         favorite.setUserId(userId);
         favorite.setProblemId(problemId);
         this.save(favorite);
+        return true;
     }
 
     @Override

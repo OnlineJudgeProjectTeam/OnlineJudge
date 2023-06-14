@@ -10,5 +10,7 @@ public class RedisConstants {
     public static final String CACHE_PROBLEM_KEY = "cache:problem:";
     public static final Long CACHE_PROBLEM_TTL = 30L;
     public static final String SOLUTION_LIKED_KEY = "solution:liked:";
+    public static final String CACHE_EVERYDAY_PROBLEM_KEY = "cache:everydayProblem:";
+    public static final Long CACHE_EVERYDAY_PROBLEM_TTL = 30L;
 
 }

@@ -1,6 +1,9 @@
 package com.example.onlinejudge.service;
 
+import com.example.onlinejudge.common.R;
+import com.example.onlinejudge.dto.SolutionDto;
 import com.example.onlinejudge.service.impl.SolutionServiceImpl;
+import com.github.pagehelper.PageInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +59,7 @@ public class ISolutionServiceTest {
 
     @Test
     public void deletSolution() throws IOException {
-        solutionService.deletSolution(8);
+        solutionService.deleteSolution(8);
     }
 
     @Test
@@ -65,5 +68,17 @@ public class ISolutionServiceTest {
                 "    test1\n"+
                 "}";
         solutionService.updateSolution(8,code);
+    }
+
+    @Test
+    public void getSolutionListTest(){
+        Integer userId = 1;
+        Integer problemId = 1;
+        Integer language = 0;
+        Integer pageSize = 10;
+        Integer pageNum = 1;
+        Integer navSize = 5;
+        R<PageInfo<SolutionDto>> solutionList = solutionService.getSolutionList(userId,pageNum,pageSize,navSize, problemId, language);
+        System.out.println(solutionList);
     }
 }

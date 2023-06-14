@@ -2,10 +2,9 @@ package com.example.onlinejudge.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,14 +17,14 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author diandianjun
- * @since 2023-06-13
+ * @since 2023-06-14
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("submission")
-@ApiModel(value="Submission对象", description="")
-public class Submission implements Serializable {
+@TableName("everyday_problem")
+@ApiModel(value="EverydayProblem对象", description="")
+public class EverydayProblem implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,17 +33,7 @@ public class Submission implements Serializable {
 
     private Integer problemId;
 
-    private Integer userId;
+    private LocalDate date;
 
-    @ApiModelProperty(value = "0代表java，1代表c，2代表JavaScript")
-    private Integer language;
-
-    @ApiModelProperty(value = "1代表通过，0代表未通过")
-    private Integer pass;
-
-    @ApiModelProperty(value = "提交时间")
-    private LocalDateTime executionTime;
-
-    private String difficulty;
 
 }
