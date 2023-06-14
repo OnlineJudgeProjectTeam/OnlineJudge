@@ -3,6 +3,7 @@ package com.example.onlinejudge.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.onlinejudge.dto.RunDto;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.entity.User;
 import com.example.onlinejudge.mapper.ProblemMapper;
@@ -53,7 +54,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     private long memoryCost;
 
     @Override
-    public String JavaJudge(String code, Integer userId,Integer problemId,Integer number){
+    public RunDto JavaJudge(String code, Integer userId, Integer problemId, Integer number){
         User user = userService.QueryById(userId);
         Problem problem = QueryById(problemId);
         String username = user.getUsername();
@@ -74,22 +75,25 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         //编译
         Boolean compileResult = JavaCompile(userCodePath,number);
         if(!compileResult){
-            return fileService.readFile(userCodePath + "/stderr.txt");
+            String message = fileService.readFile(userCodePath + "/stderr.txt");
+            RunDto runDto = new RunDto(message, -1L, -1L);
         }
         //运行
         Boolean runResult = JavaRun(userCodePath,number);
 //        System.out.println("timeCost:"+timeCost+"ms");
 //        System.out.println("memoryCost:"+memoryCost+"KB");
         if(!runResult){
-            return fileService.readFile(userCodePath + "/stderr.txt");
+            String message = fileService.readFile(userCodePath + "/stderr.txt");
+            return new RunDto(message, -1L, -1L);
         }else{
             if(timeCost>problem.getTimeLimit()){
-                return "Time Limit Exceeded";
+                return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
-                return "Memory Limit Exceeded";
+                return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
-            return fileService.readFile(userCodePath + "/stdout.txt");
+            String message = fileService.readFile(userCodePath + "/stdout.txt");
+            return new RunDto(message, timeCost, memoryCost);
         }
     }
     @Override
@@ -189,7 +193,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     }
 
     @Override
-    public String CJudge(String code, Integer userId, Integer problemId, Integer number) {
+    public RunDto CJudge(String code, Integer userId, Integer problemId, Integer number) {
         User user = userService.QueryById(userId);
         Problem problem = QueryById(problemId);
         String username = user.getUsername();
@@ -210,22 +214,25 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         //编译
         Boolean compileResult = CCompile(userCodePath,number);
         if(!compileResult){
-            return fileService.readFile(userCodePath + "/stderr.txt");
+            String message = fileService.readFile(userCodePath + "/stderr.txt");
+            RunDto runDto = new RunDto(message, -1L, -1L);
         }
         //运行
         Boolean runResult = CRun(userCodePath,number);
 //        System.out.println("timeCost:"+timeCost+"ms");
 //        System.out.println("memoryCost:"+memoryCost+"KB");
         if(!runResult){
-            return fileService.readFile(userCodePath + "/stderr.txt");
+            String message = fileService.readFile(userCodePath + "/stderr.txt");
+            return new RunDto(message, -1L, -1L);
         }else{
             if(timeCost>problem.getTimeLimit()){
-                return "Time Limit Exceeded";
+                return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
-                return "Memory Limit Exceeded";
+                return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
-            return fileService.readFile(userCodePath + "/stdout.txt");
+            String message = fileService.readFile(userCodePath + "/stdout.txt");
+            return new RunDto(message, timeCost, memoryCost);
         }
     }
 
@@ -331,5 +338,29 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 throw new IllegalStateException("Unexpected value: " + language);
         }
         return fileService.readFile(answerPath);
+    }
+
+    @Override
+    public String getProblemDescription(Integer problemId) {
+        Problem problem = QueryById(problemId);
+        String descriptionPath = problemPath+"/"+problem.getName()+"/description.txt";
+        return fileService.readFile(descriptionPath);
+    }
+
+    @Override
+    public String getProblemTemplate(Integer problemId, Integer language) {
+        Problem problem = QueryById(problemId);
+        String templatePath="";
+        switch (language){
+            case 0:
+                templatePath = problemPath+"/"+problem.getName()+"/java"+"/template.java";
+                break;
+            case 1:
+                templatePath = problemPath+"/"+problem.getName()+"/c"+"/template.java";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + language);
+        }
+        return fileService.readFile(templatePath);
     }
 }

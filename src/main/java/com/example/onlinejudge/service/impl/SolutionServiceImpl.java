@@ -121,7 +121,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         ArrayList<SolutionDto> solutionDtos = new ArrayList<>();
         HashMap<Integer, Problem> problemMap = problemMapper.getProblemMap();
         User user = userService.QueryById(userId);
-        list(solutionLambdaQueryWrapper).forEach(solution -> {
+        List<Solution> list = list(solutionLambdaQueryWrapper);
+        for(Solution solution:list){
             SolutionDto solutionDto = new SolutionDto(solution);
             Problem problem = problemMap.get(solution.getProblemId());
             solutionDto.setProblemName(problem.getName());
@@ -131,7 +132,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             solutionDto.setIsLike(solution.getIsLike());
             solutionDto.setContent(content);
             solutionDtos.add(solutionDto);
-        });
+        }
         PageInfo<SolutionDto> solutionDtoPageInfo = new PageInfo<>(solutionDtos, navSize);
         return R.success(solutionDtoPageInfo);
     }

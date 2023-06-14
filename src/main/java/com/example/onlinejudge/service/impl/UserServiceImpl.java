@@ -236,6 +236,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         BeanUtil.copyProperties(userMap,user);
         return user;
     }
+
+    @Override
+    public R<String> logout(Integer id) {
+        stringRedisTemplate.delete(CACHE_USER_KEY+id);
+        return R.success("退出成功");
+    }
 }
 
 

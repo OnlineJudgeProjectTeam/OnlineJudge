@@ -1,5 +1,6 @@
 package com.example.onlinejudge.service;
 
+import com.example.onlinejudge.dto.RunDto;
 import com.example.onlinejudge.entity.Problem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,7 @@ public class IProblemServiceTest {
                 "}";
         Integer userId = 1;
         Integer problemId = 1;
-        String result = problemService.JavaJudge(code, userId, problemId,1);
+        RunDto result = problemService.JavaJudge(code, userId, problemId,1);
         System.out.println(result);
     }
 
@@ -69,7 +70,7 @@ public class IProblemServiceTest {
                 "}";
         Integer userId = 1;
         Integer problemId = 1;
-        String result = problemService.CJudge(code, userId, problemId,1);
+        RunDto result = problemService.CJudge(code, userId, problemId,1);
         System.out.println(result);
     }
 

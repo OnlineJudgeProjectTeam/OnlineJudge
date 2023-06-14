@@ -38,8 +38,8 @@ public class SpringFoxSwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Swagger Test App Restful API")
                 .description("swagger test app restful api")
-                .termsOfServiceUrl("https://github.com/geekxingyun")
-                .contact(new Contact("技术宅星云","https://xingyun.blog.csdn.net","fairy_xingyun@hotmail.com"))
+                .termsOfServiceUrl("https://github.com/OnlineJudgeProjectTeam")
+                .contact(new Contact("oj系统","https://github.com/OnlineJudgeProjectTeam","none"))
                 .version("1.0")
                 .build();
     }

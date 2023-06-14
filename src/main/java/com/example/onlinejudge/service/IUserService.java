@@ -28,4 +28,6 @@ public interface IUserService extends IService<User> {
     R<String>  update(User user);
 
     User QueryById(Integer id);
+
+    R<String> logout(Integer id);
 }
