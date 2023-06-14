@@ -53,4 +53,17 @@ public class ISolutionServiceTest {
         Integer language = 0;
         solutionService.createSolution(code,problemId,userId,language);
     }
+
+    @Test
+    public void deletSolution() throws IOException {
+        solutionService.deletSolution(8);
+    }
+
+    @Test
+    public void updateSolution(){
+        String code = "#include<stdio.h>\n" +
+                "    test1\n"+
+                "}";
+        solutionService.updateSolution(8,code);
+    }
 }

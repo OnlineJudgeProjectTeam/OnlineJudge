@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.swagger.models.auth.In;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +18,10 @@ import java.io.IOException;
  */
 public interface ISolutionService extends IService<Solution> {
     R<String > createSolution(String code, Integer problemId, Integer userId,Integer language) throws IOException;
+
+    R<String>  deletSolution(Integer solutionId) throws IOException;
+
+    R<String> updateSolution(Integer solutionId,String code);
+
+    R likeSolution(Integer solutionId);
 }
