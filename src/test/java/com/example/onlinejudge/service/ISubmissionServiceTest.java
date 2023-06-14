@@ -34,6 +34,6 @@ public class ISubmissionServiceTest {
         int userId = 1;
         int problemId = 1;
         String difficulty = "";
-        System.out.println(submissionService.getAcData(userId, problemId, difficulty));
+        System.out.println(submissionService.getAcData(userId, difficulty));
     }
 }

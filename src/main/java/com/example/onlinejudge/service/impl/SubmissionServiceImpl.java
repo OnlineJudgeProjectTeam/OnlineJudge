@@ -36,12 +36,11 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
     private ProblemMapper problemMapper;
 
     @Override
-    public ACData getAcData(Integer userId, Integer problemId, String difficulty) {
+    public ACData getAcData(Integer userId, String difficulty) {
         ACData ACData = new ACData();
         {
             LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
             submissionLambdaQueryWrapper.eq(Submission::getUserId, userId);
-            submissionLambdaQueryWrapper.eq(Submission::getProblemId, problemId);
             submissionLambdaQueryWrapper.eq(Submission::getPass, 1);
             if(!difficulty.equals("")){
                 submissionLambdaQueryWrapper.eq(Submission::getDifficulty,difficulty);
@@ -52,7 +51,6 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
         {
             LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
             submissionLambdaQueryWrapper.eq(Submission::getUserId, userId);
-            submissionLambdaQueryWrapper.eq(Submission::getProblemId, problemId);
             List<Submission> list = this.list(submissionLambdaQueryWrapper);
             ACData.setSubmitNum(list.size());
         }

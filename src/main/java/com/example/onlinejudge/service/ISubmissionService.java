@@ -17,6 +17,6 @@ import java.time.LocalDateTime;
  * @since 2023-06-13
  */
 public interface ISubmissionService extends IService<Submission> {
-    public ACData getAcData(Integer userId, Integer problemId, String difficulty);
+    public ACData getAcData(Integer userId, String difficulty);
     PageInfo<SubmissionDto> getSubmissionList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize, Integer language, String difficulty, Integer pass, LocalDateTime startTime, LocalDateTime endTime);
 }
