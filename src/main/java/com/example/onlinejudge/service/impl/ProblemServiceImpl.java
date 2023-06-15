@@ -3,6 +3,7 @@ package com.example.onlinejudge.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.onlinejudge.common.Type;
 import com.example.onlinejudge.dto.RunDto;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.entity.Submission;
@@ -11,6 +12,7 @@ import com.example.onlinejudge.mapper.ProblemMapper;
 import com.example.onlinejudge.service.FileService;
 import com.example.onlinejudge.service.IProblemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.onlinejudge.service.ISubmissionService;
 import com.example.onlinejudge.service.IUserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -23,6 +25,8 @@ import javax.annotation.Resource;
 import javax.management.Query;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +55,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private FileService fileService;
+    @Autowired
+    ISubmissionService submissionService;
     private long timeCost;
     private long memoryCost;
 
@@ -83,19 +89,32 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         Boolean runResult = JavaRun(userCodePath,number);
 //        System.out.println("timeCost:"+timeCost+"ms");
 //        System.out.println("memoryCost:"+memoryCost+"KB");
-        if(!runResult){
+        Submission submission = new Submission();
+        submission.setProblemId(problemId);
+        submission.setUserId(userId);
+        submission.setLanguage(Type.java);
+        submission.setDifficulty(problem.getDifficulty());
+        submission.setExecutionTime(LocalDateTime.now());
+        if(!runResult){//
             String message = fileService.readFile(userCodePath + "/stderr.txt");
-            Submission submission = new Submission();
-            submission.setUserId(userId);
-
+            submission.setPass(0);
+            submissionService.save(submission);
             return new RunDto(message, -1L, -1L);
         }else{
+            submission.setTimeCost(BigInteger.valueOf(timeCost));
+            submission.setMemoryCost(BigInteger.valueOf(memoryCost));
             if(timeCost>problem.getTimeLimit()){
+                submission.setPass(0);
+                submissionService.save(submission);
                 return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
+                submission.setPass(0);
+                submissionService.save(submission);
                 return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
+            submission.setPass(1);
+            submissionService.save(submission);
             String message = fileService.readFile(userCodePath + "/stdout.txt");
             return new RunDto(message, timeCost, memoryCost);
         }
@@ -225,16 +244,33 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         Boolean runResult = CRun(userCodePath,number);
 //        System.out.println("timeCost:"+timeCost+"ms");
 //        System.out.println("memoryCost:"+memoryCost+"KB");
+        Submission submission = new Submission();
+        submission.setProblemId(problemId);
+        submission.setUserId(userId);
+        submission.setLanguage(Type.c);
+        submission.setDifficulty(problem.getDifficulty());
+        submission.setExecutionTime(LocalDateTime.now());
         if(!runResult){
             String message = fileService.readFile(userCodePath + "/stderr.txt");
+            submission.setPass(0);
+            submissionService.save(submission);
             return new RunDto(message, -1L, -1L);
         }else{
+            submission.setTimeCost(BigInteger.valueOf(timeCost));
+            submission.setMemoryCost(BigInteger.valueOf(memoryCost));
+
             if(timeCost>problem.getTimeLimit()){
+                submission.setPass(0);
+                submissionService.save(submission);
                 return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
+                submission.setPass(0);
+                submissionService.save(submission);
                 return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
+            submission.setPass(1);
+            submissionService.save(submission);
             String message = fileService.readFile(userCodePath + "/stdout.txt");
             return new RunDto(message, timeCost, memoryCost);
         }

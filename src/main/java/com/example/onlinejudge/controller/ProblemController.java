@@ -64,12 +64,12 @@ public class ProblemController {
         return R.success(problemDto);
     }
 
-    @GetMapping("/submit")
+    @PostMapping ("/submit")
     @ApiOperation("提交代码")
     public R<RunDto> submit(@RequestBody SubmitDto submitDto){
         RunDto result = null;
         Integer language = submitDto.getLanguage();
-        Integer problemId =submitDto.getProblemIdm();
+        Integer problemId =submitDto.getProblemId();
         Integer userId = submitDto.getUserId();
         String code =submitDto.getCode();
         if(language == 0){

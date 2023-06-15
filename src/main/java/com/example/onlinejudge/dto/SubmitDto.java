@@ -18,6 +18,6 @@ import lombok.NoArgsConstructor;
 public class SubmitDto {
    private String code ;
    private Integer userId;
-   private Integer problemIdm;
+   private Integer problemId;
    private Integer language;
 }

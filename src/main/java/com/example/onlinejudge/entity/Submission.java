@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModel;
@@ -46,5 +47,9 @@ public class Submission implements Serializable {
     private LocalDateTime executionTime;
 
     private String difficulty;
+
+    private BigInteger timeCost;
+
+    private BigInteger memoryCost;
 
 }
