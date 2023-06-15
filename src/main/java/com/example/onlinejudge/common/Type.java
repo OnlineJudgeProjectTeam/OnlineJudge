@@ -14,6 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Type {
 
+    public static final int RightAnserLenth = 15;
     public static final int java = 0;
     public static final int c = 1;
     public static final int javascript = 2;

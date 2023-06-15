@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.onlinejudge.common.Type.RightAnserLenth;
 import static com.example.onlinejudge.utils.RedisConstants.*;
 
 /**
@@ -80,21 +81,23 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         //将测试文件拷到用户目录下
         fileService.fileCopy(problemCodePath+"/Test"+number+".java",userCodePath+"/Test"+number+".java",true);
         //编译
-        Boolean compileResult = JavaCompile(userCodePath,number);
-        if(!compileResult){
-            String message = fileService.readFile(userCodePath + "/stderr.txt");
-            RunDto runDto = new RunDto(message, -1L, -1L);
-        }
-        //运行
-        Boolean runResult = JavaRun(userCodePath,number);
-//        System.out.println("timeCost:"+timeCost+"ms");
-//        System.out.println("memoryCost:"+memoryCost+"KB");
         Submission submission = new Submission();
         submission.setProblemId(problemId);
         submission.setUserId(userId);
         submission.setLanguage(Type.java);
         submission.setDifficulty(problem.getDifficulty());
         submission.setExecutionTime(LocalDateTime.now());
+        Boolean compileResult = JavaCompile(userCodePath,number);
+        if(!compileResult){
+            submission.setPass(0);
+            submissionService.save(submission);
+            String message = fileService.readFile(userCodePath + "/stderr.txt");
+            return new RunDto(message, -1L, -1L);
+        }
+        //运行
+        Boolean runResult = JavaRun(userCodePath,number);
+//        System.out.println("timeCost:"+timeCost+"ms");
+//        System.out.println("memoryCost:"+memoryCost+"KB");
         if(!runResult){//
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             submission.setPass(0);
@@ -103,19 +106,20 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         }else{
             submission.setTimeCost(BigInteger.valueOf(timeCost));
             submission.setMemoryCost(BigInteger.valueOf(memoryCost));
+            submission.setPass(0);
             if(timeCost>problem.getTimeLimit()){
-                submission.setPass(0);
                 submissionService.save(submission);
                 return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
-                submission.setPass(0);
                 submissionService.save(submission);
                 return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
-            submission.setPass(1);
-            submissionService.save(submission);
             String message = fileService.readFile(userCodePath + "/stdout.txt");
+           if( message.length() == RightAnserLenth) {
+               submission.setPass(1);
+           }
+            submissionService.save(submission);
             return new RunDto(message, timeCost, memoryCost);
         }
     }
@@ -236,42 +240,47 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         fileService.fileCopy(problemCodePath+"/Test"+number+".c",userCodePath+"/Test"+number+".c",true);
         //编译
         Boolean compileResult = CCompile(userCodePath,number);
-        if(!compileResult){
-            String message = fileService.readFile(userCodePath + "/stderr.txt");
-            RunDto runDto = new RunDto(message, -1L, -1L);
-        }
-        //运行
-        Boolean runResult = CRun(userCodePath,number);
-//        System.out.println("timeCost:"+timeCost+"ms");
-//        System.out.println("memoryCost:"+memoryCost+"KB");
         Submission submission = new Submission();
         submission.setProblemId(problemId);
         submission.setUserId(userId);
         submission.setLanguage(Type.c);
         submission.setDifficulty(problem.getDifficulty());
         submission.setExecutionTime(LocalDateTime.now());
+        if(!compileResult){
+            submission.setPass(0);
+            submissionService.save(submission);
+            String message = fileService.readFile(userCodePath + "/stderr.txt");
+            return new RunDto(message, -1L, -1L);
+        }
+        //运行
+        Boolean runResult = CRun(userCodePath,number);
+//        System.out.println("timeCost:"+timeCost+"ms");
+//        System.out.println("memoryCost:"+memoryCost+"KB");
+
         if(!runResult){
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             submission.setPass(0);
             submissionService.save(submission);
             return new RunDto(message, -1L, -1L);
         }else{
+            submission.setPass(0);
             submission.setTimeCost(BigInteger.valueOf(timeCost));
             submission.setMemoryCost(BigInteger.valueOf(memoryCost));
 
             if(timeCost>problem.getTimeLimit()){
-                submission.setPass(0);
                 submissionService.save(submission);
                 return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
-                submission.setPass(0);
                 submissionService.save(submission);
                 return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
-            submission.setPass(1);
-            submissionService.save(submission);
+
             String message = fileService.readFile(userCodePath + "/stdout.txt");
+            if( message.length() == RightAnserLenth) {
+                submission.setPass(1);
+            }
+            submissionService.save(submission);
             return new RunDto(message, timeCost, memoryCost);
         }
     }
