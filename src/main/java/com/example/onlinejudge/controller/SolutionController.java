@@ -35,13 +35,13 @@ public class SolutionController {
 
     @PostMapping("/create")
     @ApiOperation("创建题解")
-    public R<String> createSolution(@ApiParam("题解") @RequestBody SolutionDto solutionDto) throws IOException {
+    public R<Solution> createSolution(@ApiParam("题解") @RequestBody SolutionDto solutionDto) throws IOException {
         String content = solutionDto.getContent();
         Integer problemId = solutionDto.getProblemId();
         Integer language = solutionDto.getLanguage();
         Integer userId = UserHolder.getUser().getId();
-        solutionService.createSolution(content,problemId,userId,language);
-        return R.success("提交成功");
+        Solution solution = solutionService.createSolution(content,problemId,userId,language);
+        return R.success(solution);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -53,11 +53,11 @@ public class SolutionController {
 
     @PostMapping("/update")
     @ApiOperation("修改题解")
-    public R<String> updateSolution(@ApiParam("题解") @RequestBody SolutionDto solutionDto){
+    public R<Solution> updateSolution(@ApiParam("题解") @RequestBody SolutionDto solutionDto){
         String content = solutionDto.getContent();
         Integer solutionId = solutionDto.getId();
-        solutionService.updateSolution(solutionId,content);
-        return R.success("修改成功");
+       Solution solution =  solutionService.updateSolution(solutionId,content);
+        return R.success(solution);
     }
 
    @PutMapping("/like/{id}")

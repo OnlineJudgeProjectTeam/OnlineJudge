@@ -6,6 +6,7 @@ import com.example.onlinejudge.common.R;
 import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.ProblemDto;
 import com.example.onlinejudge.dto.RunDto;
+import com.example.onlinejudge.dto.SubmitDto;
 import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.Favorite;
 import com.example.onlinejudge.entity.Problem;
@@ -16,10 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -68,8 +66,12 @@ public class ProblemController {
 
     @GetMapping("/submit")
     @ApiOperation("提交代码")
-    public R<RunDto> submit(@ApiParam("代码") String code,@ApiParam("用户id") Integer userId,@ApiParam("题目id") Integer problemId,@ApiParam("语言，0为java，1为c") Integer language){
+    public R<RunDto> submit(@RequestBody SubmitDto submitDto){
         RunDto result = null;
+        Integer language = submitDto.getLanguage();
+        Integer problemId =submitDto.getProblemIdm();
+        Integer userId = submitDto.getUserId();
+        String code =submitDto.getCode();
         if(language == 0){
             result = problemService.JavaJudge(code, userId, problemId, 1);
         }else if(language == 1){

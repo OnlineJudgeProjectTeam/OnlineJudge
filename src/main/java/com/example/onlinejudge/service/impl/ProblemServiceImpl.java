@@ -360,7 +360,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 templatePath = problemPath+"/"+problem.getName()+"/java"+"/template.java";
                 break;
             case 1:
-                templatePath = problemPath+"/"+problem.getName()+"/c"+"/template.java";
+                templatePath = problemPath+"/"+problem.getName()+"/c"+"/template.c";
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + language);

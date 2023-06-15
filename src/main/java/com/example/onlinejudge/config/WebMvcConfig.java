@@ -32,6 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
      * 设置静态资源映射
+     *
      * @param registry
      */
     @Override
@@ -46,6 +47,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
      * 扩展MVC框架的消息转换器
+     *
      * @param converters MVC原先默认的转换器
      */
     @Override
@@ -55,28 +57,28 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //设置对象转换器，底层使用Jackson将java对象转为json
         converter.setObjectMapper(new JacksonObjectMapper());
         //将这个消息转换器追加到默认的转换器中
-        converters.add(0,converter);
+        converters.add(0, converter);
     }
 
 
     @Bean(name = "multipartResolver")
-    public MultipartResolver multipartResolver(){
+    public MultipartResolver multipartResolver() {
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
         resolver.setDefaultEncoding("UTF-8");
         //resolveLazily属性启用是为了推迟文件解析，以在在UploadAction中捕获文件大小异常
         resolver.setResolveLazily(true);
         resolver.setMaxInMemorySize(40960);
         //上传文件大小 50M 50*1024*1024
-        resolver.setMaxUploadSize(50*1024*1024);
+        resolver.setMaxUploadSize(50 * 1024 * 1024);
         return resolver;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor()).excludePathPatterns("/user/Login","/user/Register","/user/LoginByCode","/user/LoginSend","/index.html","/js/**","/css/**","/swagger-resources/**"
-                ,"/webjars/**"
-                ,"/v2/**"
-                ,"/swagger-ui.html/**").order(1);
+        registry.addInterceptor(new LoginInterceptor()).excludePathPatterns("/user/login", "/user/register", "/user/login-send", "/user/login-by-code", "/user/register-send","/index.html", "/js/**", "/css/**", "/swagger-resources/**"
+                , "/webjars/**"
+                , "/v2/**"
+                , "/swagger-ui.html/**").order(1);
         registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
     }
 

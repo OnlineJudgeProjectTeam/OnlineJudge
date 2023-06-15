@@ -19,11 +19,11 @@ import java.util.List;
  * @since 2023-06-13
  */
 public interface ISolutionService extends IService<Solution> {
-    R<String > createSolution(String content, Integer problemId, Integer userId,Integer language) throws IOException;
+    Solution  createSolution(String content, Integer problemId, Integer userId,Integer language) throws IOException;
 
     R<String>  deleteSolution(Integer solutionId) throws IOException;
 
-    R<String> updateSolution(Integer solutionId,String content);
+    Solution updateSolution(Integer solutionId,String content);
 
     R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId);
 

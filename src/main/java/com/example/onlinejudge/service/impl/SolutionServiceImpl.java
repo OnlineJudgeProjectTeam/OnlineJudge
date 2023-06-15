@@ -1,14 +1,11 @@
 package com.example.onlinejudge.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.onlinejudge.common.R;
 import com.example.onlinejudge.common.Type;
 import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.SolutionDto;
-import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.entity.Solution;
 import com.example.onlinejudge.entity.User;
@@ -28,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.example.onlinejudge.utils.RedisConstants.SOLUTION_LIKED_KEY;
 
@@ -60,7 +56,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     private FileService fileService;
 
     @Override
-    public R<String> createSolution(String code, Integer problemId, Integer userId, Integer language) throws IOException {
+    public Solution createSolution(String code, Integer problemId, Integer userId, Integer language) throws IOException {
         // 根据用户ID和题目ID查询用户和题目信息
         Solution solution = new Solution();
         solution.setUserId(userId);
@@ -70,6 +66,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         File Folder = new File(filepath);
         if (!Folder.exists()) {
             Folder.mkdirs();
+
         }
         File file = new File(Folder + "/" + "solution.md");
         if (!file.exists()) {
@@ -78,7 +75,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             solution.setCreatedTime(LocalDateTime.now());
             // 保存题解对象到数据库
             save(solution);
-            return R.success("提交成功");
+            return solution;
         } else throw new IllegalArgumentException("题解已存在");
     }
 
@@ -99,14 +96,16 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
-    public R<String> updateSolution(Integer solutionId, String code) {
+    public Solution updateSolution(Integer solutionId, String code) {
        Solution solution = getById(solutionId);
         if (solution == null) {
             throw new IllegalArgumentException("错误的题解id");
         }
         String filePath = getFilePath(solution) + "/solution.md";
         fileService.writeFile(filePath, code);
-        return null;
+        solution.setUpdatedTime(LocalDateTime.now());
+        updateById(solution);
+        return solution;
     }
 
     @Override
