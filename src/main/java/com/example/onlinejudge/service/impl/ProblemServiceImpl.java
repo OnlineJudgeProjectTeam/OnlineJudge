@@ -5,6 +5,7 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.dto.RunDto;
 import com.example.onlinejudge.entity.Problem;
+import com.example.onlinejudge.entity.Submission;
 import com.example.onlinejudge.entity.User;
 import com.example.onlinejudge.mapper.ProblemMapper;
 import com.example.onlinejudge.service.FileService;
@@ -84,6 +85,9 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
 //        System.out.println("memoryCost:"+memoryCost+"KB");
         if(!runResult){
             String message = fileService.readFile(userCodePath + "/stderr.txt");
+            Submission submission = new Submission();
+            submission.setUserId(userId);
+
             return new RunDto(message, -1L, -1L);
         }else{
             if(timeCost>problem.getTimeLimit()){

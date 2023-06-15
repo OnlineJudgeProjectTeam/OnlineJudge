@@ -66,26 +66,26 @@ public class ProblemController {
         return R.success(problemDto);
     }
 
-    @GetMapping("submit")
+    @GetMapping("/submit")
     @ApiOperation("提交代码")
     public R<RunDto> submit(@ApiParam("代码") String code,@ApiParam("用户id") Integer userId,@ApiParam("题目id") Integer problemId,@ApiParam("语言，0为java，1为c") Integer language){
         RunDto result = null;
         if(language == 0){
-            result = problemService.JavaJudge(code, userId, problemId, 0);
+            result = problemService.JavaJudge(code, userId, problemId, 1);
         }else if(language == 1){
-            result = problemService.CJudge(code, userId, problemId, 0);
+            result = problemService.CJudge(code, userId, problemId, 1);
         }
         return R.success(result);
     }
 
-    @GetMapping("get-answer")
+    @GetMapping("/get-answer")
     @ApiOperation("获取题目答案")
     public R<String> getAnswer(@ApiParam("题目id") Integer problemId,@ApiParam("语言，0为java，1为c") Integer language){
         String result = problemService.getAnswer(problemId, language);
         return R.success(result);
     }
 
-    @GetMapping("get-random-problem")
+    @GetMapping("/get-random-problem")
     @ApiOperation("获取随机题目")
     public R<Problem> getRandomProblem(){
         Problem problem = problemService.getRandomProblem();

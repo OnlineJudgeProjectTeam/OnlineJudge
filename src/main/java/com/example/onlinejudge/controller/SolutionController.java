@@ -70,8 +70,8 @@ public class SolutionController {
    @GetMapping("/get-solution-list")
    @ApiOperation("获取题解列表")
    R<PageInfo<SolutionDto>>GetSolutionList( @ApiParam("查询页数") Integer pageNum, @ApiParam("每页大小") Integer pageSize,
-                                            @ApiParam("需要展示的页数") Integer navSize, @ApiParam("问题id") Integer problemId, @ApiParam("语言，0代表java，1代表c") Integer language){
-        R <PageInfo<SolutionDto>> solutionDtoPageInfo = solutionService.getSolutionList(pageNum,pageSize,navSize,problemId,language);
+                                            @ApiParam("需要展示的页数") Integer navSize, @ApiParam("问题id") Integer problemId){
+        R <PageInfo<SolutionDto>> solutionDtoPageInfo = solutionService.getSolutionList(pageNum,pageSize,navSize,problemId);
         return solutionDtoPageInfo;
    }
 }

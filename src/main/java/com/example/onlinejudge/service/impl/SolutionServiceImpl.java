@@ -110,7 +110,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
-    public R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId,Integer language) {
+    public R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId) {
         PageHelper.startPage(pageNum, pageSize);
         LambdaQueryWrapper<Solution> solutionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (problemId != null) {
@@ -126,7 +126,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             SolutionDto solutionDto = new SolutionDto(solution);
             Problem problem = problemMap.get(solution.getProblemId());
             solutionDto.setProblemName(problem.getName());
-            String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/"+getLanguageFolder(language)+ "/solution.md";
+            String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/"+getLanguageFolder(solution.getLanguage())+ "/solution.md";
             String content = fileService.readFile(path);
             isSolutionLiked(solution);
             solutionDto.setIsLike(solution.getIsLike());
