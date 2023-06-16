@@ -65,7 +65,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
         if(language != null){
             submissionLambdaQueryWrapper.eq(Submission::getLanguage,language);
         }
-        if(difficulty != null){
+        if(difficulty != null && difficulty !=""){
             submissionLambdaQueryWrapper.eq(Submission::getDifficulty,difficulty);
         }
         if(pass != null){

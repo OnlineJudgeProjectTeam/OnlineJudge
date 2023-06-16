@@ -83,8 +83,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username);
-        List<User> list = list(queryWrapper);
-        if (!list.isEmpty()) {
+        User tbUser = getOne(queryWrapper);
+        if (tbUser!=null) {
             return R.error("用户名已存在");
         }
         if (!RegexUtils.isPasswordInvalid(password)) {
@@ -238,8 +238,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public R<String> logout(Integer id) {
-        stringRedisTemplate.delete(CACHE_USER_KEY+id);
+    public R<String> logout() {
+        UserDto userDto =UserHolder.getUser();
+        String token = userDto.getToken();
+        stringRedisTemplate.delete(LOGIN_USER_KEY +token);
         return R.success("退出成功");
     }
 }

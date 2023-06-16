@@ -82,7 +82,10 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     @Override
     public R<String> deleteSolution(Integer solutionId) throws IOException {
         // 根据题解ID查询题解信息
-        Solution solution = getById(solutionId);
+        LambdaQueryWrapper<Solution> queryWrapper = new LambdaQueryWrapper<>();
+        User user =  UserHolder.getUser();
+        queryWrapper.eq(Solution::getUserId,user.getId()).eq(Solution::getId,solutionId);
+        Solution solution = getOne(queryWrapper);
         if (solution == null) {
             throw new IllegalArgumentException("错误的题解id");
         }
@@ -97,7 +100,10 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
     @Override
     public Solution updateSolution(Integer solutionId, String code) {
-       Solution solution = getById(solutionId);
+        LambdaQueryWrapper<Solution> queryWrapper = new LambdaQueryWrapper<>();
+        User user =  UserHolder.getUser();
+        queryWrapper.eq(Solution::getUserId,user.getId()).eq(Solution::getId,solutionId);
+        Solution solution = getOne(queryWrapper);
         if (solution == null) {
             throw new IllegalArgumentException("错误的题解id");
         }
@@ -138,6 +144,12 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
     @Override
     public R<String> likeSolution(Integer solutionId) {
+        LambdaQueryWrapper<Solution> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Solution::getId,solutionId);
+        Solution solution = getOne(queryWrapper);
+        if (solution == null) {
+            throw new IllegalArgumentException("错误的题解id");
+        }
        Integer userId = UserHolder.getUser().getId();
         // 判断当前登录用户是否已经点赞
         String key = SOLUTION_LIKED_KEY + solutionId;

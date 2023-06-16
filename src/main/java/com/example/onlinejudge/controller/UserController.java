@@ -3,6 +3,7 @@ package com.example.onlinejudge.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.common.R;
+import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.UserCodeDto;
 import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.User;
@@ -47,13 +48,19 @@ public class UserController {
         if(user!=null){
             return R.error("该邮箱已被注册");
         }
-        userService.sendCode(email);
-        return R.success("验证码已发送");
+       return userService.sendCode(email);
+
     }
 
     @GetMapping("/login-send")
     @ApiOperation("发送登录验证码")
     public R<String> LoginSend(@ApiParam("登录邮箱") String email){
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.eq(User::getEmail,email);
+        User user = userService.getOne(userLambdaQueryWrapper);
+        if(user == null){
+            return R.error("用户未注册");
+        }
         userService.sendCode(email);
         return R.success("验证码已发送");
     }
@@ -61,6 +68,12 @@ public class UserController {
     @PostMapping("/register")
     @ApiOperation("注册")
     public R<String> Register(@RequestBody @ApiParam("注册数据") UserCodeDto userCodeDto){
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.eq(User::getEmail,userCodeDto.getEmail());
+        User user = userService.getOne(userLambdaQueryWrapper);
+        if(user!=null){
+            return R.error("该邮箱已被注册");
+        }
         return userService.register(userCodeDto.getEmail(), userCodeDto.getUsername(), userCodeDto.getPassword(), userCodeDto.getCode(), userCodeDto.getName());
     }
 
@@ -78,8 +91,8 @@ public class UserController {
 
     @GetMapping("/logout")
     @ApiOperation("登出")
-    public R<String> Logout(@ApiParam("用户id") Integer id){
-        return userService.logout(id);
+    public R<String> Logout(){
+        return userService.logout();
     }
 
     @PostMapping("/upload")
@@ -87,5 +100,12 @@ public class UserController {
     public R<String> upload(@ApiParam("图片") MultipartFile image) throws Exception {
         String url = aliOSSUtils.upload(image);
         return R.success(url);
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("更新用户信息")
+    public R<String> update(@RequestBody User user)
+    {
+      return userService.update(user);
     }
 }

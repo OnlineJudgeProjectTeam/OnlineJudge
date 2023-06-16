@@ -14,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.security.PublicKey;
-import java.util.List;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author diandianjun
@@ -60,12 +58,12 @@ public class SolutionController {
         return R.success(solution);
     }
 
-   @PutMapping("/like/{id}")
-   @ApiOperation("点赞")
-    public R<String> likeSolution(@ApiParam("题解id")@PathVariable("id") Integer id){
-        solutionService.likeSolution(id);
-        return R.success("点赞成功");
-   }
+    @PutMapping("/like/{id}")
+    @ApiOperation("点赞")
+    public R<String> likeSolution(@ApiParam("题解id") @PathVariable("id") Integer id) {
+        return solutionService.likeSolution(id);
+
+    }
 
    @GetMapping("/get-solution-list")
    @ApiOperation("获取题解列表")
