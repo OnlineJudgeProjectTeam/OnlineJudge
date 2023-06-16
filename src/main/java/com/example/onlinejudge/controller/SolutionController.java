@@ -26,6 +26,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/solution")
 @Api("题解管理")
+@CrossOrigin
 public class SolutionController {
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.example.onlinejudge.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -16,7 +17,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author diandianjun
- * @since 2023-06-14
+ * @since 2023-06-16
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -42,5 +43,9 @@ public class Problem implements Serializable {
 
     private Integer favorites;
 
+    @ApiModelProperty(value = "题解数")
+    private Integer solutions;
 
+    @TableField(exist = false)
+    private Integer isFavorite;
 }

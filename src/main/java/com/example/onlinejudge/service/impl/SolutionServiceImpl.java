@@ -75,6 +75,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             solution.setUpdatedTime(LocalDateTime.now());
             // 保存题解对象到数据库
             save(solution);
+            problemService.update().setSql("solutions = solutions + 1").eq("id", problemId).update();
             return solution;
         } else throw new IllegalArgumentException("题解已存在");
     }
@@ -95,6 +96,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         file.delete();
         // 删除题解记录
         removeById(solutionId);
+        problemService.update().setSql("solutions = solutions - 1").eq("id", solution.getProblemId()).update();
         return R.success("删除成功");
     }
 

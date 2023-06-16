@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/user")
 @Api("用户管理")
+@CrossOrigin
 public class UserController {
     @Autowired
     private IUserService userService;

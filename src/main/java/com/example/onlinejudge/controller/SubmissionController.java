@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/submission")
 @Api("做题记录管理")
+@CrossOrigin
 public class SubmissionController {
     @Autowired
     private ISubmissionService submissionService;

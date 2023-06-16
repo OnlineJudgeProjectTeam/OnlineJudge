@@ -31,6 +31,7 @@ aliyun:
 
 server:
   port: 8070
+  address: 0.0.0.0
 
 #mybatis:
 #  mapper-locations: classpath:mappers/*xml

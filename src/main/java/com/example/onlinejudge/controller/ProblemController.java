@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/problem")
 @Api("题目管理")
+@CrossOrigin
 public class ProblemController {
     @Autowired
     private IProblemService problemService;

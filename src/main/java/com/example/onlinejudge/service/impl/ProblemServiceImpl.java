@@ -4,20 +4,18 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.common.Type;
+import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.RunDto;
-import com.example.onlinejudge.entity.Problem;
-import com.example.onlinejudge.entity.Submission;
-import com.example.onlinejudge.entity.User;
+import com.example.onlinejudge.dto.UserDto;
+import com.example.onlinejudge.entity.*;
 import com.example.onlinejudge.mapper.ProblemMapper;
-import com.example.onlinejudge.service.FileService;
-import com.example.onlinejudge.service.IProblemService;
+import com.example.onlinejudge.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.onlinejudge.service.ISubmissionService;
-import com.example.onlinejudge.service.IUserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +56,9 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     private FileService fileService;
     @Autowired
     ISubmissionService submissionService;
+    @Autowired
+    @Lazy
+    IFavoriteService favoriteService;
     private long timeCost;
     private long memoryCost;
 
@@ -352,7 +353,18 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         int size = list.size();
         Random random = new Random();
         int index = random.nextInt(size);
-        return list.get(index);
+        Problem problem = list.get(index);
+        UserDto user = UserHolder.getUser();
+        LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        favoriteLambdaQueryWrapper.eq(Favorite::getProblemId,problem.getId());
+        favoriteLambdaQueryWrapper.eq(Favorite::getUserId,problem.getId());
+        Favorite one = favoriteService.getOne(favoriteLambdaQueryWrapper);
+        if(one!=null){
+            problem.setIsFavorite(1);
+        }else{
+            problem.setIsFavorite(0);
+        }
+        return problem;
     }
 
     @Override
@@ -369,6 +381,18 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             problemLambdaQueryWrapper.eq(Problem::getDifficulty,difficulty);
         }
         List<Problem> list = list(problemLambdaQueryWrapper);
+        UserDto user = UserHolder.getUser();
+        for(Problem problem:list){
+            LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            favoriteLambdaQueryWrapper.eq(Favorite::getProblemId,problem.getId());
+            favoriteLambdaQueryWrapper.eq(Favorite::getUserId,user.getId());
+            Favorite one = favoriteService.getOne(favoriteLambdaQueryWrapper);
+            if(one!=null){
+                problem.setIsFavorite(1);
+            }else{
+                problem.setIsFavorite(0);
+            }
+        }
         return new PageInfo<>(list,navSize);
     }
 
