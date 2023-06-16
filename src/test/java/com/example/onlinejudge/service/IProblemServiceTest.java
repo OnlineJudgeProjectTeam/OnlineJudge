@@ -75,6 +75,29 @@ public class IProblemServiceTest {
     }
 
     @Test
+    public void CJudgeTest2(){
+        String code="import java.util.HashMap;\n" +
+                "class Solution {\n" +
+                "    public int[] twoSum(int[] nums, int target) {\n" +
+                "        int[] res;\n" +
+                "        HashMap<Integer, Integer> map = new HashMap<>();\n" +
+                "        for (int i = 0; i < nums.length; i++) {\n" +
+                "            if(map.containsKey(target-nums[i])){\n" +
+                "                res=new int[]{map.get(target-nums[i]),i};\n" +
+                "                return res;\n" +
+                "            }\n" +
+                "            map.put(nums[i],i);\n" +
+                "        }\n" +
+                "        return null;\n" +
+                "    }\n" +
+                "}";
+        Integer userId = 1;
+        Integer problemId = 1;
+        RunDto result = problemService.CJudge(code, userId, problemId,1);
+        System.out.println(result);
+    }
+
+    @Test
     public void getRandomProblemTest(){
         System.out.println(problemService.getRandomProblem());
     }

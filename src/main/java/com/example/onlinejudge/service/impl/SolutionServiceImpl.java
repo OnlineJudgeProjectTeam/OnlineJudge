@@ -66,13 +66,13 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         File Folder = new File(filepath);
         if (!Folder.exists()) {
             Folder.mkdirs();
-
         }
         File file = new File(Folder + "/" + "solution.md");
         if (!file.exists()) {
             file.createNewFile();
             fileService.writeFile(file.getPath(), code);
             solution.setCreatedTime(LocalDateTime.now());
+            solution.setUpdatedTime(LocalDateTime.now());
             // 保存题解对象到数据库
             save(solution);
             return solution;
@@ -110,7 +110,6 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
     @Override
     public R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId) {
-        PageHelper.startPage(pageNum, pageSize);
         LambdaQueryWrapper<Solution> solutionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (problemId != null) {
             solutionLambdaQueryWrapper.eq(Solution::getProblemId, problemId);
@@ -118,6 +117,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         solutionLambdaQueryWrapper.orderByDesc(Solution::getCreatedTime);
         ArrayList<SolutionDto> solutionDtos = new ArrayList<>();
         HashMap<Integer, Problem> problemMap = problemMapper.getProblemMap();
+        PageHelper.startPage(pageNum, pageSize);
         List<Solution> list = list(solutionLambdaQueryWrapper);
         for(Solution solution:list){
             Integer userId = solution.getUserId();

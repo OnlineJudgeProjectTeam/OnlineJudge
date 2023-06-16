@@ -53,7 +53,7 @@ public class ISolutionServiceTest {
                 "}";
         Integer userId = 1;
         Integer problemId = 1;
-        Integer language = 0;
+        Integer language = 1;
         solutionService.createSolution(code,problemId,userId,language);
     }
 
@@ -73,9 +73,9 @@ public class ISolutionServiceTest {
     @Test
     public void getSolutionListTest(){
         Integer problemId = null;
-        Integer pageSize = 10;
+        Integer pageSize = 1;
         Integer pageNum = 1;
-        Integer navSize = 5;
+        Integer navSize = 3;
         R<PageInfo<SolutionDto>> solutionList = solutionService.getSolutionList(pageNum,pageSize,navSize, problemId);
         System.out.println(solutionList);
     }
