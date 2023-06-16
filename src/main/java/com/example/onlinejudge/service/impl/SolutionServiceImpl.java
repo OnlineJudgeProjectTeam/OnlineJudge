@@ -73,6 +73,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             fileService.writeFile(file.getPath(), code);
             solution.setCreatedTime(LocalDateTime.now());
             solution.setUpdatedTime(LocalDateTime.now());
+            solution.setLikes(0);
+            solution.setIsLike(false);
             // 保存题解对象到数据库
             save(solution);
             problemService.update().setSql("solutions = solutions + 1").eq("id", problemId).update();
@@ -97,6 +99,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         // 删除题解记录
         removeById(solutionId);
         problemService.update().setSql("solutions = solutions - 1").eq("id", solution.getProblemId()).update();
+        //删除redis记录
+        stringRedisTemplate.delete(SOLUTION_LIKED_KEY + solutionId);
         return R.success("删除成功");
     }
 
@@ -112,6 +116,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         String filePath = getFilePath(solution) + "/solution.md";
         fileService.writeFile(filePath, code);
         solution.setUpdatedTime(LocalDateTime.now());
+        isSolutionLiked(solution);
         updateById(solution);
         return solution;
     }
