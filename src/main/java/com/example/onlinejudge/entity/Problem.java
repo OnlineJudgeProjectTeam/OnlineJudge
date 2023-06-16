@@ -48,4 +48,7 @@ public class Problem implements Serializable {
 
     @TableField(exist = false)
     private Integer isFavorite;
+
+    @TableField(exist = false)
+    private Integer status;
 }

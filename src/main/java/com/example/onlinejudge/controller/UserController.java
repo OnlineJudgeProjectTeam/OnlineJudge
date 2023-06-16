@@ -105,9 +105,8 @@ public class UserController {
 
     @PostMapping("/update")
     @ApiOperation("更新用户信息")
-    public R<String> update(@RequestBody User user)
-    {
-      return userService.update(user);
+    public R<String> update(@RequestBody User user) {
+        return userService.update(user);
     }
 
     @GetMapping("/rank")
@@ -125,7 +124,7 @@ public class UserController {
         if(user == null){
             return R.error("用户未注册");
         }
-     return  userService.sendCode(email);
+        return  userService.sendCode(email);
     }
 
     @PostMapping("/update-password")
