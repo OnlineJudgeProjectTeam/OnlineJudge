@@ -8,6 +8,7 @@ import com.example.onlinejudge.dto.UserCodeDto;
 import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.User;
 import com.example.onlinejudge.service.IUserService;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -108,5 +109,11 @@ public class UserController {
     public R<String> update(@RequestBody User user)
     {
       return userService.update(user);
+    }
+
+    @GetMapping("/rank")
+    public R<PageInfo<User>> getRank(Integer pageNum,Integer pageSize,Integer navSize){
+        PageInfo<User> rank = userService.getRank(pageNum, pageSize, navSize);
+        return R.success(rank);
     }
 }

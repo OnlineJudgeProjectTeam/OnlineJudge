@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import javax.management.Query;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -89,10 +90,15 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         submission.setDifficulty(problem.getDifficulty());
         submission.setExecutionTime(LocalDateTime.now());
         Boolean compileResult = JavaCompile(userCodePath,number);
+        Integer acNum = user.getAcNum();
+        Integer submitNum = user.getSubmitNum();
+        user.setSubmitNum(submitNum+1);
         if(!compileResult){
             submission.setPass(0);
             submissionService.save(submission);
             String message = fileService.readFile(userCodePath + "/stderr.txt");
+            user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+            userService.update(user);
             return new RunDto(message, -1L, -1L);
         }
         //运行
@@ -103,6 +109,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             submission.setPass(0);
             submissionService.save(submission);
+            user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+            userService.update(user);
             return new RunDto(message, -1L, -1L);
         }else{
             submission.setTimeCost(BigInteger.valueOf(timeCost));
@@ -110,17 +118,24 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setPass(0);
             if(timeCost>problem.getTimeLimit()){
                 submissionService.save(submission);
+                user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+                userService.update(user);
                 return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
                 submissionService.save(submission);
+                user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+                userService.update(user);
                 return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
             String message = fileService.readFile(userCodePath + "/stdout.txt");
            if( message.length() == RightAnserLenth) {
+               user.setAcNum(acNum+1);
                submission.setPass(1);
            }
             submissionService.save(submission);
+            user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+            userService.update(user);
             return new RunDto(message, timeCost, memoryCost);
         }
     }
@@ -247,9 +262,14 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         submission.setLanguage(Type.c);
         submission.setDifficulty(problem.getDifficulty());
         submission.setExecutionTime(LocalDateTime.now());
+        Integer acNum = user.getAcNum();
+        Integer submitNum = user.getSubmitNum();
+        user.setSubmitNum(submitNum+1);
         if(!compileResult){
             submission.setPass(0);
             submissionService.save(submission);
+            user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+            userService.update(user);
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             return new RunDto(message, -1L, -1L);
         }
@@ -262,25 +282,33 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             submission.setPass(0);
             submissionService.save(submission);
+            user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+            userService.update(user);
             return new RunDto(message, -1L, -1L);
         }else{
             submission.setPass(0);
             submission.setTimeCost(BigInteger.valueOf(timeCost));
             submission.setMemoryCost(BigInteger.valueOf(memoryCost));
-
             if(timeCost>problem.getTimeLimit()){
                 submissionService.save(submission);
+                user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+                userService.update(user);
                 return new RunDto("Time Limit Exceeded",timeCost,memoryCost);
             }
             if(memoryCost>problem.getMemoryLimit()){
                 submissionService.save(submission);
+                user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+                userService.update(user);
                 return new RunDto("Memory Limit Exceeded",timeCost,memoryCost);
             }
 
             String message = fileService.readFile(userCodePath + "/stdout.txt");
             if( message.length() == RightAnserLenth) {
+                user.setAcNum(acNum+1);
                 submission.setPass(1);
             }
+            user.setAcRate(new BigDecimal(String.valueOf(acNum)).divide(new BigDecimal(submitNum),2, BigDecimal.ROUND_HALF_UP));
+            userService.update(user);
             submissionService.save(submission);
             return new RunDto(message, timeCost, memoryCost);
         }

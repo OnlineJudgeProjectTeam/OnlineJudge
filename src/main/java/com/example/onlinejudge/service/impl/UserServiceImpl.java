@@ -14,6 +14,8 @@ import com.example.onlinejudge.service.MailService;
 import com.example.onlinejudge.utils.PasswordEncoder;
 import com.example.onlinejudge.utils.RegexUtils;
 import com.example.onlinejudge.utils.ValidateImageCodeUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -243,6 +245,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String token = userDto.getToken();
         stringRedisTemplate.delete(LOGIN_USER_KEY +token);
         return R.success("退出成功");
+    }
+
+    @Override
+    public PageInfo<User> getRank(Integer pageNum, Integer pageSize, Integer navSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.orderByDesc(User::getAcRate);
+        List<User> list = list(userLambdaQueryWrapper);
+        for(User user:list){
+            user.setPassword(null);
+        }
+        return new PageInfo<>(list, navSize);
     }
 }
 
