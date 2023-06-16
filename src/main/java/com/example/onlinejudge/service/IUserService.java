@@ -1,6 +1,7 @@
 package com.example.onlinejudge.service;
 
 import com.example.onlinejudge.common.R;
+import com.example.onlinejudge.dto.UserCodeDto;
 import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -29,6 +30,8 @@ public interface IUserService extends IService<User> {
      R<String> update(User user);
 
     User QueryById(Integer id);
+
+    R<String> updatePassword(UserCodeDto userCodeDto);
 
     R<String> logout();
 

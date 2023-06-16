@@ -75,7 +75,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor()).excludePathPatterns("/user/login", "/user/register", "/user/login-send", "/user/login-by-code", "/user/register-send","/index.html", "/js/**", "/css/**", "/swagger-resources/**"
+        registry.addInterceptor(new LoginInterceptor()).excludePathPatterns("/user/login", "/user/register",
+                "/user/login-send", "/user/login-by-code", "/user/register-send","/user/update-password-send",
+                "/user/update-password",
+                "/index.html", "/js/**", "/css/**", "/swagger-resources/**"
                 , "/webjars/**"
                 , "/v2/**"
                 , "/swagger-ui.html/**").order(1);

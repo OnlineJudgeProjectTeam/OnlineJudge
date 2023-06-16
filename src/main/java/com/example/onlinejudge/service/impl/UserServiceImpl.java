@@ -5,6 +5,7 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.common.R;
 import com.example.onlinejudge.common.UserHolder;
+import com.example.onlinejudge.dto.UserCodeDto;
 import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.User;
 import com.example.onlinejudge.mapper.UserMapper;
@@ -237,6 +238,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User user = new User();
         BeanUtil.copyProperties(userMap,user);
         return user;
+    }
+
+    @Override
+    public R<String> updatePassword(UserCodeDto userCodeDto) {
+        String cacheCode = stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY + userCodeDto.getEmail());
+        if (cacheCode == null || !cacheCode.equals(userCodeDto.getCode())) {
+            // 不一致，报错
+            return R.error("验证码不一致");
+        }
+        // 输入密码的逻辑
+        String username = userCodeDto.getUsername();
+        String password = userCodeDto.getPassword();
+        if (!RegexUtils.isPasswordInvalid(password)) {
+            return R.error("密码格式不正确");
+        }
+        //将密码进行md5加密，
+        String finalPassword = PasswordEncoder.encode(password);
+        User user = query().eq("email",userCodeDto.getEmail()).one();
+        user.setPassword(finalPassword);
+        updateById(user);
+        return R.success("修改成功");
     }
 
     @Override

@@ -63,8 +63,7 @@ public class UserController {
         if(user == null){
             return R.error("用户未注册");
         }
-        userService.sendCode(email);
-        return R.success("验证码已发送");
+      return userService.sendCode(email);
     }
 
     @PostMapping("/register")
@@ -115,5 +114,23 @@ public class UserController {
     public R<PageInfo<User>> getRank(Integer pageNum,Integer pageSize,Integer navSize){
         PageInfo<User> rank = userService.getRank(pageNum, pageSize, navSize);
         return R.success(rank);
+    }
+
+    @GetMapping("/update-password-send")
+    @ApiOperation("发送修改密码验证码")
+    public R<String> updatePasswordSend(@ApiParam("登录邮箱") String email){
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.eq(User::getEmail,email);
+        User user = userService.getOne(userLambdaQueryWrapper);
+        if(user == null){
+            return R.error("用户未注册");
+        }
+     return  userService.sendCode(email);
+    }
+
+    @PostMapping("/update-password")
+    @ApiOperation("修改密码")
+    public R<String> updatePassword(@RequestBody UserCodeDto userCodeDto){
+        return userService.updatePassword(userCodeDto);
     }
 }
