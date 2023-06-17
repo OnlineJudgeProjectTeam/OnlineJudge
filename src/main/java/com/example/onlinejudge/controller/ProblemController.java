@@ -54,9 +54,9 @@ public class ProblemController {
         String problemDescription = problemService.getProblemDescription(problemId);
         problemDto.setDescription(problemDescription);
         String javaProblemTemplate = problemService.getProblemTemplate(problemId, Type.java);
-        problemDto.setTemplateJava(javaProblemTemplate);
         String cProblemTemplate = problemService.getProblemTemplate(problemId, Type.c);
-        problemDto.setTemplateC(cProblemTemplate);
+        String[] template = {javaProblemTemplate, cProblemTemplate};
+        problemDto.setTemplate(template);
         UserDto user = UserHolder.getUser();
         LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
         favoriteLambdaQueryWrapper.eq(Favorite::getUserId, user.getId());

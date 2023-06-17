@@ -13,9 +13,7 @@ public class ProblemDto extends Problem {
     @ApiModelProperty(value = "题目描述")
     private String description;
     @ApiModelProperty(value = "java模板代码")
-    private String templateJava;
-    @ApiModelProperty(value = "c模板代码")
-    private String templateC;
+    private String[] template;
 
     public ProblemDto(Problem problem) {
         this.setId(problem.getId());
