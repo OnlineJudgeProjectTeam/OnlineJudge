@@ -12,8 +12,10 @@ import lombok.EqualsAndHashCode;
 public class ProblemDto extends Problem {
     @ApiModelProperty(value = "题目描述")
     private String description;
-    @ApiModelProperty(value = "模板代码")
-    private String template;
+    @ApiModelProperty(value = "java模板代码")
+    private String templateJava;
+    @ApiModelProperty(value = "c模板代码")
+    private String templateC;
 
     public ProblemDto(Problem problem) {
         this.setId(problem.getId());

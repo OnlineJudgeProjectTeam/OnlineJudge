@@ -3,6 +3,7 @@ package com.example.onlinejudge.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.common.R;
+import com.example.onlinejudge.common.Type;
 import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.ProblemDto;
 import com.example.onlinejudge.dto.RunDto;
@@ -45,13 +46,15 @@ public class ProblemController {
 
     @GetMapping("/get-problem-content")
     @ApiOperation("获取题目内容")
-    public R<ProblemDto> getProblemContent(@ApiParam("题目id") Integer problemId,@ApiParam("语言，0为java，1为c") Integer language){
+    public R<ProblemDto> getProblemContent(@ApiParam("题目id") Integer problemId){
         Problem problem = problemService.QueryById(problemId);
         ProblemDto problemDto = new ProblemDto(problem);
         String problemDescription = problemService.getProblemDescription(problemId);
         problemDto.setDescription(problemDescription);
-        String problemTemplate = problemService.getProblemTemplate(problemId, language);
-        problemDto.setTemplate(problemTemplate);
+        String javaProblemTemplate = problemService.getProblemTemplate(problemId, Type.java);
+        problemDto.setTemplateJava(javaProblemTemplate);
+        String cProblemTemplate = problemService.getProblemTemplate(problemId, Type.c);
+        problemDto.setTemplateC(cProblemTemplate);
         UserDto user = UserHolder.getUser();
         LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
         favoriteLambdaQueryWrapper.eq(Favorite::getUserId, user.getId());
