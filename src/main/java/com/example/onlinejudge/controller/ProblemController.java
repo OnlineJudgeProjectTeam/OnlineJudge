@@ -20,6 +20,8 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * <p>
  *  前端控制器
@@ -70,15 +72,15 @@ public class ProblemController {
 
     @PostMapping ("/submit")
     @ApiOperation("提交代码")
-    public R<RunDto> submit(@RequestBody SubmitDto submitDto){
+    public R<RunDto> submit(@RequestBody SubmitDto submitDto) throws UnsupportedEncodingException {
         RunDto result = null;
         Integer language = submitDto.getLanguage();
         Integer problemId =submitDto.getProblemId();
         Integer userId = submitDto.getUserId();
         String code =submitDto.getCode();
-        if(language == 0){
+        if(language == Type.java){
             result = problemService.JavaJudge(code, userId, problemId, 1);
-        }else if(language == 1){
+        }else if(language == Type.c){
             result = problemService.CJudge(code, userId, problemId, 1);
         }
         return R.success(result);

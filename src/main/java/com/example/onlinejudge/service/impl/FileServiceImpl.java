@@ -4,6 +4,9 @@ import com.example.onlinejudge.service.FileService;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -102,6 +105,34 @@ public class FileServiceImpl implements FileService {
             try {
                 assert fr != null;
                 fr.close();
+                assert br != null;
+                br.close();
+            } catch (IOException e) {
+                throw new RuntimeException("文件关闭失败");
+            }
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String readFile(String path, Charset charset) {
+        InputStreamReader isr = null;
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+            isr = new InputStreamReader(Files.newInputStream(Paths.get(path)),charset);
+            br = new BufferedReader(isr);
+            String temp = "";
+            while ((temp = br.readLine()) != null) {
+                sb.append(temp);
+                sb.append("\n");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("文件读取失败");
+        } finally {
+            try {
+                assert isr != null;
+                isr.close();
                 assert br != null;
                 br.close();
             } catch (IOException e) {

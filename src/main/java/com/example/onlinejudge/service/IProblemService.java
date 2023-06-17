@@ -5,6 +5,8 @@ import com.example.onlinejudge.entity.Problem;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * <p>
  *  服务类
@@ -14,7 +16,7 @@ import com.github.pagehelper.PageInfo;
  * @since 2023-06-13
  */
 public interface IProblemService extends IService<Problem> {
-    public RunDto JavaJudge(String code, Integer userId, Integer problemId, Integer number);
+    public RunDto JavaJudge(String code, Integer userId, Integer problemId, Integer number) throws UnsupportedEncodingException;
     Problem QueryById(Integer id);
     Boolean JavaCompile(String workingDirectory,Integer number);
     Boolean JavaRun(String workingDirectory,Integer number);

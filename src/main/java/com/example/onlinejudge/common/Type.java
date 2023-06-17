@@ -18,4 +18,8 @@ public class Type {
     public static final int java = 0;
     public static final int c = 1;
     public static final int javascript = 2;
+    public static final int pass = 1;
+    public static final int notPass = 0;
+    public static final int favorite = 1;
+    public static final int notFavorite = 0;
 }

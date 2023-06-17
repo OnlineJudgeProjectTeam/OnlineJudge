@@ -23,10 +23,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
+import javax.management.Query;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     private long memoryCost;
 
     @Override
-    public RunDto JavaJudge(String code, Integer userId, Integer problemId, Integer number) {
+    public RunDto JavaJudge(String code, Integer userId, Integer problemId, Integer number) throws UnsupportedEncodingException {
         User user = userService.QueryById(userId);
         Problem problem = QueryById(problemId);
         String username = user.getUsername();
@@ -96,8 +97,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         Integer acNum = user.getAcNum();
         Integer submitNum = user.getSubmitNum();
         user.setSubmitNum(++submitNum);
-        if (!compileResult) {
-            submission.setPass(0);
+        if(!compileResult){
+            submission.setPass(Type.notPass);
             submissionService.save(submission);
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
@@ -118,8 +119,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         } else {
             submission.setTimeCost(BigInteger.valueOf(timeCost));
             submission.setMemoryCost(BigInteger.valueOf(memoryCost));
-            submission.setPass(0);
-            if (timeCost > problem.getTimeLimit()) {
+            submission.setPass(Type.notPass);
+            if(timeCost>problem.getTimeLimit()){
                 submissionService.save(submission);
                 user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
                 userService.update(user);
@@ -132,10 +133,10 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 return new RunDto("Memory Limit Exceeded", timeCost, memoryCost);
             }
             String message = fileService.readFile(userCodePath + "/stdout.txt");
-            if (message.length() == RightAnserLenth) {
-                user.setAcNum(++acNum);
-                submission.setPass(1);
-            }
+           if( message.length() == RightAnserLenth) {
+               user.setAcNum(++acNum);
+               submission.setPass(Type.pass);
+           }
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
@@ -182,7 +183,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     public Boolean JavaCompile(String workingDirectory, Integer number) {
         try {
             // 构建命令
-            ProcessBuilder processBuilder = new ProcessBuilder("javac", "-encoding", "utf-8", "./Test" + number + ".java");
+            ProcessBuilder processBuilder = new ProcessBuilder("javac","-J-Duser.language=en", "-encoding", "utf-8", "./Test" + number + ".java");
             // 设置工作目录
             processBuilder.directory(new File(workingDirectory));
             // 设置输出文件
@@ -259,7 +260,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         //将测试文件拷到用户目录下
         fileService.fileCopy(problemCodePath + "/Test" + number + ".c", userCodePath + "/Test" + number + ".c", true);
         //编译
-        Boolean compileResult = CCompile(userCodePath, number);
+        Boolean compileResult = CCompile(userCodePath,number);
         Submission submission = new Submission();
         submission.setProblemId(problemId);
         submission.setUserId(userId);
@@ -269,8 +270,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         Integer acNum = user.getAcNum();
         Integer submitNum = user.getSubmitNum();
         user.setSubmitNum(++submitNum);
-        if (!compileResult) {
-            submission.setPass(0);
+        if(!compileResult){
+            submission.setPass(Type.notPass);
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
@@ -284,13 +285,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
 
         if (!runResult) {
             String message = fileService.readFile(userCodePath + "/stderr.txt");
-            submission.setPass(0);
+            submission.setPass(Type.notPass);
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
             return new RunDto(message, -1L, -1L);
-        } else {
-            submission.setPass(0);
+        }else{
+            submission.setPass(Type.notPass);
             submission.setTimeCost(BigInteger.valueOf(timeCost));
             submission.setMemoryCost(BigInteger.valueOf(memoryCost));
             if (timeCost > problem.getTimeLimit()) {
@@ -308,7 +309,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             String message = fileService.readFile(userCodePath + "/stdout.txt");
             if (message.length() == RightAnserLenth) {
                 user.setAcNum(++acNum);
-                submission.setPass(1);
+                submission.setPass(Type.pass);
             }
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
@@ -402,13 +403,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     public PageInfo<Problem> getProblemList(Integer pageNum, Integer pageSize, Integer navSize, String name, String tags, String difficulty) {
         PageHelper.startPage(pageNum, pageSize);
         LambdaQueryWrapper<Problem> problemLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if (name != null && !name.equals("")) {
+        if (name != null &&!name.equals("")&& !name.equals("undefined")) {
             problemLambdaQueryWrapper.like(Problem::getName, name);
         }
-        if (tags != null && !tags.equals("")) {
+        if (tags != null && !tags.equals("")&& !tags.equals("undefined")) {
             problemLambdaQueryWrapper.like(Problem::getTags, tags);
         }
-        if (difficulty != null && !difficulty.equals("")) {
+        if (difficulty != null && !difficulty.equals("")&& !difficulty.equals("undefined")) {
             problemLambdaQueryWrapper.eq(Problem::getDifficulty, difficulty);
         }
         List<Problem> list = list(problemLambdaQueryWrapper);
@@ -418,10 +419,10 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             favoriteLambdaQueryWrapper.eq(Favorite::getProblemId, problem.getId());
             favoriteLambdaQueryWrapper.eq(Favorite::getUserId, user.getId());
             Favorite one = favoriteService.getOne(favoriteLambdaQueryWrapper);
-            if (one != null) {
-                problem.setIsFavorite(1);
-            } else {
-                problem.setIsFavorite(0);
+            if(one!=null){
+                problem.setIsFavorite(Type.favorite);
+            }else{
+                problem.setIsFavorite(Type.notFavorite);
             }
             LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
             submissionLambdaQueryWrapper.eq(Submission::getUserId, user.getId());
