@@ -173,6 +173,26 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <!-- 镜像名称  -->
+                    <imageName>onlinejudge</imageName>
+                    <!-- Dockerfile文件存放目录 -->
+                    <dockerDirectory>D:/IntelliJ IDEA Educational Edition 2021.3.3/code/OnlineJudge</dockerDirectory>
+                    <!-- docker远程服务器地址 -->
+                    <dockerHost>http://43.140.197.50:2375</dockerHost>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.war</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

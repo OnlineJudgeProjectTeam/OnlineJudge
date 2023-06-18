@@ -51,8 +51,15 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
         {
             LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
             submissionLambdaQueryWrapper.eq(Submission::getUserId, userId);
+            if(!difficulty.equals("")){
+                submissionLambdaQueryWrapper.eq(Submission::getDifficulty,difficulty);
+            }
             List<Submission> list = this.list(submissionLambdaQueryWrapper);
             ACData.setSubmitNum(list.size());
+        }
+        if(ACData.getSubmitNum() == 0){
+            ACData.setAcRate(new BigDecimal(0));
+            return ACData;
         }
         ACData.setAcRate(new BigDecimal(ACData.getAcNum()).divide(new BigDecimal(ACData.getSubmitNum()), 2, BigDecimal.ROUND_HALF_UP));
         return ACData;
@@ -87,5 +94,29 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
             submissionDtos.add(submissionDto);
         }
         return new PageInfo<>(submissionDtos,navSize);
+    }
+
+    @Override
+    public BigDecimal getTimeBeat(Integer problemId, Integer language, Long timeCost) {
+        LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        submissionLambdaQueryWrapper.eq(Submission::getProblemId,problemId);
+        submissionLambdaQueryWrapper.eq(Submission::getLanguage,language);
+        submissionLambdaQueryWrapper.eq(Submission::getPass,1);
+        long total = count(submissionLambdaQueryWrapper);
+        submissionLambdaQueryWrapper.ge(Submission::getExecutionTime,timeCost);
+        long better = count(submissionLambdaQueryWrapper);
+        return new BigDecimal(better).divide(new BigDecimal(total),2,BigDecimal.ROUND_HALF_UP);
+    }
+
+    @Override
+    public BigDecimal getMemoryBeat(Integer problemId, Integer language, Long memoryCost) {
+        LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        submissionLambdaQueryWrapper.eq(Submission::getProblemId,problemId);
+        submissionLambdaQueryWrapper.eq(Submission::getLanguage,language);
+        submissionLambdaQueryWrapper.eq(Submission::getPass,1);
+        long total = count(submissionLambdaQueryWrapper);
+        submissionLambdaQueryWrapper.ge(Submission::getMemoryCost,memoryCost);
+        long better = count(submissionLambdaQueryWrapper);
+        return new BigDecimal(better).divide(new BigDecimal(total),2,BigDecimal.ROUND_HALF_UP);
     }
 }

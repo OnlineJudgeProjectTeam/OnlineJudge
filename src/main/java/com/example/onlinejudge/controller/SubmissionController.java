@@ -2,8 +2,10 @@ package com.example.onlinejudge.controller;
 
 
 import com.example.onlinejudge.common.R;
+import com.example.onlinejudge.common.UserHolder;
 import com.example.onlinejudge.dto.ACData;
 import com.example.onlinejudge.dto.SubmissionDto;
+import com.example.onlinejudge.dto.TotalAcData;
 import com.example.onlinejudge.service.ISubmissionService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -44,6 +46,22 @@ public class SubmissionController {
         }
         ACData acData = submissionService.getAcData(userId, difficulty);
         return R.success(acData);
+    }
+
+    @GetMapping("/get-total-ac-rate")
+    @ApiOperation("获取总通过率")
+    public R<TotalAcData> getTotalAcRate(@ApiParam("用户id") Integer userId){
+        if(userId==null){
+            userId = UserHolder.getUser().getId();
+        }
+        TotalAcData totalAcData = new TotalAcData();
+        ACData total = submissionService.getAcData(userId, "");
+        ACData easy = submissionService.getAcData(userId, "简单");
+        ACData medium = submissionService.getAcData(userId, "中等");
+        ACData hard = submissionService.getAcData(userId, "困难");
+        ACData[] acData = {total, easy, medium, hard};
+        totalAcData.setAcData(acData);
+        return R.success(totalAcData);
     }
 
     @GetMapping("/get-submission-list")

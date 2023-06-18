@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.UnsupportedEncodingException;
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class IProblemServiceTest {
@@ -22,20 +24,18 @@ public class IProblemServiceTest {
     }
 
     @Test
-    public void JavaJudgeTest(){
+    public void JavaJudgeTest() throws UnsupportedEncodingException {
         String code="import java.util.HashMap;\n" +
                 "class Solution {\n" +
                 "    public int[] twoSum(int[] nums, int target) {\n" +
-                "        int[] res;\n" +
-                "        HashMap<Integer, Integer> map = new HashMap<>();\n" +
-                "        for (int i = 0; i < nums.length; i++) {\n" +
-                "            if(map.containsKey(target-nums[i])){\n" +
-                "                res=new int[]{map.get(target-nums[i]),i};\n" +
-                "                return res;\n" +
+                "        Map<Integer, Integer> map = new HashMap<>();\n" +
+                "        for(int i = 0; i< nums.length; i++) {\n" +
+                "            if(map.containsKey(target - nums[i])) {\n" +
+                "                return new int[] {map.get(target-nums[i]),i};\n" +
                 "            }\n" +
-                "            map.put(nums[i],i);\n" +
+                "            map.put(nums[i], i);\n" +
                 "        }\n" +
-                "        return null;\n" +
+                "        throw new IllegalArgumentException(\"No two sum solution\");\n" +
                 "    }\n" +
                 "}";
         Integer userId = 1;

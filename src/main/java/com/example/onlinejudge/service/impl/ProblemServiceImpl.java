@@ -103,7 +103,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
-            return new RunDto(message, -1L, -1L);
+            return new RunDto(message, -1L, -1L,new BigDecimal("0"),new BigDecimal("0"));
         }
         //运行
         Boolean runResult = JavaRun(userCodePath, number);
@@ -115,7 +115,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
-            return new RunDto(message, -1L, -1L);
+            return new RunDto(message, -1L, -1L,new BigDecimal("0"),new BigDecimal("0"));
         } else {
             submission.setTimeCost(BigInteger.valueOf(timeCost));
             submission.setMemoryCost(BigInteger.valueOf(memoryCost));
@@ -124,13 +124,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 submissionService.save(submission);
                 user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
                 userService.update(user);
-                return new RunDto("Time Limit Exceeded", timeCost, memoryCost);
+                return new RunDto("Time Limit Exceeded", timeCost, memoryCost,new BigDecimal("0"),new BigDecimal("0"));
             }
             if (memoryCost > problem.getMemoryLimit()) {
                 submissionService.save(submission);
                 user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
                 userService.update(user);
-                return new RunDto("Memory Limit Exceeded", timeCost, memoryCost);
+                return new RunDto("Memory Limit Exceeded", timeCost, memoryCost,new BigDecimal("0"),new BigDecimal("0"));
             }
             String message = fileService.readFile(userCodePath + "/stdout.txt");
            if( message.length() == RightAnserLenth) {
@@ -140,7 +140,9 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
-            return new RunDto(message, timeCost, memoryCost);
+            BigDecimal timeBeat = submissionService.getTimeBeat(problemId, Type.java, timeCost);
+            BigDecimal memoryBeat = submissionService.getMemoryBeat(problemId, Type.java, memoryCost);
+            return new RunDto(message, timeCost, memoryCost,timeBeat,memoryBeat);
         }
     }
 
@@ -276,7 +278,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
             String message = fileService.readFile(userCodePath + "/stderr.txt");
-            return new RunDto(message, -1L, -1L);
+            return new RunDto(message, -1L, -1L,new BigDecimal("0"),new BigDecimal("0"));
         }
         //运行
         Boolean runResult = CRun(userCodePath, number);
@@ -289,7 +291,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
-            return new RunDto(message, -1L, -1L);
+            return new RunDto(message, -1L, -1L,new BigDecimal("0"),new BigDecimal("0"));
         }else{
             submission.setPass(Type.notPass);
             submission.setTimeCost(BigInteger.valueOf(timeCost));
@@ -298,13 +300,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 submissionService.save(submission);
                 user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
                 userService.update(user);
-                return new RunDto("Time Limit Exceeded", timeCost, memoryCost);
+                return new RunDto("Time Limit Exceeded", timeCost, memoryCost,new BigDecimal("0"),new BigDecimal("0"));
             }
             if (memoryCost > problem.getMemoryLimit()) {
                 submissionService.save(submission);
                 user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
                 userService.update(user);
-                return new RunDto("Memory Limit Exceeded", timeCost, memoryCost);
+                return new RunDto("Memory Limit Exceeded", timeCost, memoryCost,new BigDecimal("0"),new BigDecimal("0"));
             }
             String message = fileService.readFile(userCodePath + "/stdout.txt");
             if (message.length() == RightAnserLenth) {
@@ -314,7 +316,9 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
             submissionService.save(submission);
-            return new RunDto(message, timeCost, memoryCost);
+            BigDecimal timeBeat = submissionService.getTimeBeat(problemId, Type.c, timeCost);
+            BigDecimal memoryBeat = submissionService.getMemoryBeat(problemId, Type.c, memoryCost);
+            return new RunDto(message, timeCost, memoryCost,timeBeat,memoryBeat);
         }
     }
 
@@ -322,7 +326,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     public Boolean CCompile(String workingDirectory, Integer number) {
         try {
             // 构建命令
-            ProcessBuilder processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number + ".exe");
+            ProcessBuilder processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number);
             // 设置工作目录
             processBuilder.directory(new File(workingDirectory));
             // 设置输出文件
@@ -347,8 +351,15 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     @Override
     public Boolean CRun(String workingDirectory, Integer number) {
         try {
+            String os = System.getProperty("os.name");
+            ProcessBuilder processBuilder;
+            //Windows操作系统
+            if (os != null && os.toLowerCase().startsWith("windows")) {
+                processBuilder = new ProcessBuilder(workingDirectory + "/" + "Test" + number);
+            } else{//Linux操作系统
+                processBuilder = new ProcessBuilder("./" + "Test" + number);
+            }
             // 构建命令
-            ProcessBuilder processBuilder = new ProcessBuilder(workingDirectory + "/" + "Test" + number + ".exe");
             // 设置工作目录
             processBuilder.directory(new File(workingDirectory));
             // 设置输出文件

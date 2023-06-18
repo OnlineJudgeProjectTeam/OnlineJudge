@@ -77,6 +77,10 @@ public class ProblemController {
         Integer language = submitDto.getLanguage();
         Integer problemId =submitDto.getProblemId();
         Integer userId = submitDto.getUserId();
+        if(userId == null){
+            UserDto user = UserHolder.getUser();
+            userId = user.getId();
+        }
         String code =submitDto.getCode();
         if(language == Type.java){
             result = problemService.JavaJudge(code, userId, problemId, 1);
