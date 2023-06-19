@@ -78,14 +78,14 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
     }
 
     @Override
-    public PageInfo<SubmissionDto> getSubmissionList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize, Integer language, String difficulty, Integer pass, LocalDateTime startTime, LocalDateTime endTime) {
+    public PageInfo<SubmissionDto> getSubmissionList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize, Integer language, String difficulty, Integer pass, LocalDateTime startTime, LocalDateTime endTime,Integer problemId) {
         LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         submissionLambdaQueryWrapper.eq(Submission::getUserId,userId);
         User user = userService.getById(userId);
         if(language != null){
             submissionLambdaQueryWrapper.eq(Submission::getLanguage,language);
         }
-        if(difficulty != null && difficulty !=""){
+        if(difficulty != null && !difficulty.equals("")){
             submissionLambdaQueryWrapper.eq(Submission::getDifficulty,difficulty);
         }
         if(pass != null){
@@ -96,6 +96,9 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
         }
         if(endTime != null){
             submissionLambdaQueryWrapper.le(Submission::getExecutionTime,endTime);
+        }
+        if(problemId != null){
+            submissionLambdaQueryWrapper.eq(Submission::getProblemId,problemId);
         }
         ArrayList<SubmissionDto> submissionDtos = new ArrayList<>();
         HashMap<Integer, Problem> problemTitleMap = problemMapper.getProblemMap();

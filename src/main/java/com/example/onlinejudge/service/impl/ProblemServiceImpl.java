@@ -99,6 +99,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         user.setSubmitNum(++submitNum);
         if(!compileResult){
             submission.setPass(Type.notPass);
+            submission.setTimeCost(BigInteger.valueOf(-1));
+            submission.setMemoryCost(BigInteger.valueOf(-1));
             submissionService.save(submission);
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
@@ -112,6 +114,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         if (!runResult) {//
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             submission.setPass(0);
+            submission.setTimeCost(BigInteger.valueOf(-1));
+            submission.setMemoryCost(BigInteger.valueOf(-1));
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
@@ -277,6 +281,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         user.setSubmitNum(++submitNum);
         if(!compileResult){
             submission.setPass(Type.notPass);
+            submission.setTimeCost(BigInteger.valueOf(-1));
+            submission.setMemoryCost(BigInteger.valueOf(-1));
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);
@@ -291,6 +297,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         if (!runResult) {
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             submission.setPass(Type.notPass);
+            submission.setTimeCost(BigInteger.valueOf(-1));
+            submission.setMemoryCost(BigInteger.valueOf(-1));
             submissionService.save(submission);
             user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
             userService.update(user);

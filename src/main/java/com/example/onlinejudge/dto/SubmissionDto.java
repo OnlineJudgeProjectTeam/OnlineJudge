@@ -25,5 +25,6 @@ public class SubmissionDto extends Submission {
         this.setUserId(submission.getUserId());
         this.setMemoryCost(submission.getMemoryCost());
         this.setTimeCost(submission.getTimeCost());
+        this.setFolderName(submission.getFolderName());
     }
 }
