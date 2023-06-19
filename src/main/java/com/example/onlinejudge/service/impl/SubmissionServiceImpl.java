@@ -5,14 +5,18 @@ import com.example.onlinejudge.dto.ACData;
 import com.example.onlinejudge.dto.SubmissionDto;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.entity.Submission;
+import com.example.onlinejudge.entity.User;
 import com.example.onlinejudge.mapper.ProblemMapper;
 import com.example.onlinejudge.mapper.SubmissionMapper;
+import com.example.onlinejudge.service.FileService;
 import com.example.onlinejudge.service.IProblemService;
 import com.example.onlinejudge.service.ISubmissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.onlinejudge.service.IUserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -34,6 +38,12 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
 
     @Autowired
     private ProblemMapper problemMapper;
+    @Autowired
+    private IUserService userService;
+    @Value("${path.user}")
+    private String userPath;
+    @Autowired
+    private FileService fileService;
 
     @Override
     public ACData getAcData(Integer userId, String difficulty) {
@@ -71,6 +81,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
     public PageInfo<SubmissionDto> getSubmissionList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize, Integer language, String difficulty, Integer pass, LocalDateTime startTime, LocalDateTime endTime) {
         LambdaQueryWrapper<Submission> submissionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         submissionLambdaQueryWrapper.eq(Submission::getUserId,userId);
+        User user = userService.getById(userId);
         if(language != null){
             submissionLambdaQueryWrapper.eq(Submission::getLanguage,language);
         }
@@ -93,6 +104,21 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
             SubmissionDto submissionDto = new SubmissionDto(submission);
             Problem problem = problemTitleMap.get(submission.getProblemId());
             submissionDto.setProblemName(problem.getName());
+            String userCodePath = userPath + "/" + user.getUsername() + "/" + problem.getName() + "/submission/"+submission.getFolderName();
+            String code;
+            if(submission.getLanguage()==0){
+                code = fileService.readFile(userCodePath + "/Test1.java");
+            }else{
+                code = fileService.readFile(userCodePath + "/Test1.c");
+            }
+            submissionDto.setCode(code);
+            String output;
+            if(submission.getPass() == 1){
+                output = fileService.readFile(userCodePath + "/stdout.txt");
+            }else{
+                output = fileService.readFile(userCodePath + "/stderr.txt");
+            }
+            submissionDto.setOutput(output);
             submissionDtos.add(submissionDto);
         }
         return new PageInfo<>(submissionDtos,navSize);

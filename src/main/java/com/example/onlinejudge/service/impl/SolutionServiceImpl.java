@@ -62,12 +62,18 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         solution.setUserId(userId);
         solution.setProblemId(problemId);
         solution.setLanguage(language);
-        String filepath = getFilePath(solution);
-        File Folder = new File(filepath);
-        if (!Folder.exists()) {
-            Folder.mkdirs();
+        Problem problem = problemService.QueryById(problemId);
+        User user = userService.QueryById(userId);
+        // 生成题解文件路径
+        String filepath = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/solution";
+        File folder = new File(filepath);
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
-        File file = new File(Folder + "/" + "solution.md");
+        String folderName = UUID.randomUUID().toString();
+        solution.setFolderName(folderName);
+        new File(folder.getPath()+"/"+folderName).mkdirs();
+        File file = new File(folder.getPath()+"/"+folderName + "/" + "solution.md");
         if (!file.exists()) {
             file.createNewFile();
             fileService.writeFile(file.getPath(), code);
@@ -92,10 +98,10 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         if (solution == null) {
             throw new IllegalArgumentException("错误的题解id");
         }
+        Problem problem = problemService.getById(solution.getProblemId());
         // 删除题解文件
-        String filePath = getFilePath(solution) + "/solution.md";
-        File file = new File(filePath);
-        file.delete();
+        String filePath = userFilePath+"/"+user.getUsername()+"/"+problem.getName()+"/solution/"+solution.getFolderName();
+        fileService.deleteFile(filePath);
         // 删除题解记录
         removeById(solutionId);
         problemService.update().setSql("solutions = solutions - 1").eq("id", solution.getProblemId()).update();
@@ -113,7 +119,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         if (solution == null) {
             throw new IllegalArgumentException("错误的题解id");
         }
-        String filePath = getFilePath(solution) + "/solution.md";
+        Problem problem = problemService.getById(solution.getProblemId());
+        String filePath = userFilePath+"/"+user.getUsername()+"/"+problem.getName()+"/solution/"+solution.getFolderName()+"/solution.md";
         fileService.writeFile(filePath, code);
         solution.setUpdatedTime(LocalDateTime.now());
         isSolutionLiked(solution);
@@ -138,7 +145,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             SolutionDto solutionDto = new SolutionDto(solution);
             Problem problem = problemMap.get(solution.getProblemId());
             solutionDto.setProblemName(problem.getName());
-            String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/"+getLanguageFolder(solution.getLanguage())+ "/solution.md";
+            String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/solution/"+solution.getFolderName()+ "/solution.md";
             String content = fileService.readFile(path);
             isSolutionLiked(solution);
             solutionDto.setIsLike(solution.getIsLike());
@@ -157,7 +164,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         if (solution == null) {
             throw new IllegalArgumentException("错误的题解id");
         }
-       Integer userId = UserHolder.getUser().getId();
+        Integer userId = UserHolder.getUser().getId();
         // 判断当前登录用户是否已经点赞
         String key = SOLUTION_LIKED_KEY + solutionId;
         Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
@@ -190,34 +197,6 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         String key = SOLUTION_LIKED_KEY + solution.getId();
         Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
         solution.setIsLike(score != null);
-    }
-
-
-    // 根据题解信息获取文件路径
-    private String getFilePath(Solution solution) {
-    // 构建文件路径逻辑，根据题解的语言和其他属性来确定文件路径
-        User user = userService.getById(solution.getUserId());
-        Problem problem = problemService.getById(solution.getProblemId());
-        if (problem == null) {
-            // 用户或题目不存在，处理相应的错误逻辑
-            throw new IllegalArgumentException("题目不存在");
-        }
-        String Language = getLanguageFolder(solution.getLanguage());
-        String filePath = userFilePath + "/" + user.getUsername() + "/" + problem.getName() + "/" + Language ;
-        return filePath;
-    }
-
-
-    private String getLanguageFolder(int language) {
-        if (language == Type.java) {
-            return "java";
-        } else if (language == Type.c) {
-            return "c";
-        } else if (language == Type.javascript) {
-            return "javascript";
-        } else {
-            throw new IllegalArgumentException("不支持的语言");
-        }
     }
 
 }

@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author diandianjun
- * @since 2023-06-13
+ * @since 2023-06-19
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -44,11 +44,12 @@ public class Solution implements Serializable {
 
     private Integer language;
 
+    private String folderName;
+
     /**
      * 是否点赞过了
      */
     @TableField(exist = false)
     private Boolean isLike;
-
 
 }

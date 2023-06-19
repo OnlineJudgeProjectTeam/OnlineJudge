@@ -25,17 +25,17 @@ public class IProblemServiceTest {
 
     @Test
     public void JavaJudgeTest() throws UnsupportedEncodingException {
-        String code="import java.util.HashMap;\n" +
-                "class Solution {\n" +
+        String code="class Solution {\n" +
                 "    public int[] twoSum(int[] nums, int target) {\n" +
-                "        Map<Integer, Integer> map = new HashMap<>();\n" +
-                "        for(int i = 0; i< nums.length; i++) {\n" +
-                "            if(map.containsKey(target - nums[i])) {\n" +
-                "                return new int[] {map.get(target-nums[i]),i};\n" +
+                "        int n = nums.length;\n" +
+                "        for (int i = 0; i < n; ++i) {\n" +
+                "            for (int j = i + 1; j < n; ++j) {\n" +
+                "                if (nums[i] + nums[j] == target) {\n" +
+                "                    return new int[]{i, j};\n" +
+                "                }\n" +
                 "            }\n" +
-                "            map.put(nums[i], i);\n" +
                 "        }\n" +
-                "        throw new IllegalArgumentException(\"No two sum solution\");\n" +
+                "        return new int[0];\n" +
                 "    }\n" +
                 "}";
         Integer userId = 1;

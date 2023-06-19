@@ -29,10 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.onlinejudge.common.Type.RightAnserLenth;
@@ -75,10 +72,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         File file = new File(userPath + "/" + username + "/" + problem.getName());
         if (!file.exists()) {
             file.mkdirs();
-            new File(userPath + "/" + username + "/" + problem.getName() + "/java").mkdirs();
-            new File(userPath + "/" + username + "/" + problem.getName() + "/c").mkdirs();
+            new File(userPath + "/" + username + "/" + problem.getName() + "/submission").mkdirs();
+            new File(userPath + "/" + username + "/" + problem.getName() + "/solution").mkdirs();
         }
-        String userCodePath = userPath + "/" + username + "/" + problem.getName() + "/java";
+        String folderName = UUID.randomUUID().toString();
+        new File(userPath + "/" + username + "/" + problem.getName() + "/submission/" + folderName).mkdirs();
+        String userCodePath = userPath + "/" + username + "/" + problem.getName() + "/submission/" + folderName;
         String problemCodePath = problemPath + "/" + problem.getName() + "/java";
         //将测试文件的依赖拷到用户目录下
         fileService.fileCopy(problemCodePath + "/dependency.txt", userCodePath + "/Test" + number + ".java", false);
@@ -93,6 +92,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         submission.setLanguage(Type.java);
         submission.setDifficulty(problem.getDifficulty());
         submission.setExecutionTime(LocalDateTime.now());
+        submission.setFolderName(folderName);
         Boolean compileResult = JavaCompile(userCodePath, number);
         Integer acNum = user.getAcNum();
         Integer submitNum = user.getSubmitNum();
@@ -250,10 +250,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         File file = new File(userPath + "/" + username + "/" + problem.getName());
         if (!file.exists()) {
             file.mkdirs();
-            new File(userPath + "/" + username + "/" + problem.getName() + "/java").mkdirs();
-            new File(userPath + "/" + username + "/" + problem.getName() + "/c").mkdirs();
+            new File(userPath + "/" + username + "/" + problem.getName() + "/submission").mkdirs();
+            new File(userPath + "/" + username + "/" + problem.getName() + "/solution").mkdirs();
         }
-        String userCodePath = userPath + "/" + username + "/" + problem.getName() + "/c";
+        String folderName = UUID.randomUUID().toString();;
+        new File(userPath + "/" + username + "/" + problem.getName() + "/submission/" + folderName).mkdirs();
+        String userCodePath = userPath + "/" + username + "/" + problem.getName() + "/submission/" + folderName;
         String problemCodePath = problemPath + "/" + problem.getName() + "/c";
         //将测试文件的依赖拷到用户目录下
         fileService.fileCopy(problemCodePath + "/dependency.txt", userCodePath + "/Test" + number + ".c", false);
@@ -269,6 +271,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         submission.setLanguage(Type.c);
         submission.setDifficulty(problem.getDifficulty());
         submission.setExecutionTime(LocalDateTime.now());
+        submission.setFolderName(folderName);
         Integer acNum = user.getAcNum();
         Integer submitNum = user.getSubmitNum();
         user.setSubmitNum(++submitNum);

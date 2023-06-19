@@ -12,6 +12,8 @@ import lombok.EqualsAndHashCode;
 public class SubmissionDto extends Submission {
     @ApiModelProperty(value = "题目名称")
     String problemName;
+    String code;
+    String output;
 
     public SubmissionDto(Submission submission){
         this.setPass(submission.getPass());
@@ -21,5 +23,7 @@ public class SubmissionDto extends Submission {
         this.setLanguage(submission.getLanguage());
         this.setProblemId(submission.getProblemId());
         this.setUserId(submission.getUserId());
+        this.setMemoryCost(submission.getMemoryCost());
+        this.setTimeCost(submission.getTimeCost());
     }
 }

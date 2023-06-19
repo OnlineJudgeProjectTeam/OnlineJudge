@@ -3,7 +3,7 @@ package com.example.onlinejudge.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author diandianjun
- * @since 2023-06-13
+ * @since 2023-06-19
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -48,8 +48,14 @@ public class Submission implements Serializable {
 
     private String difficulty;
 
+    @ApiModelProperty(value = "时间消耗，单位是ms")
     private BigInteger timeCost;
 
+    @ApiModelProperty(value = "内存消耗，单位是KB")
     private BigInteger memoryCost;
+
+    @ApiModelProperty(value = "记录代码的文件夹名")
+    private String folderName;
+
 
 }

@@ -1,5 +1,7 @@
 package com.example.onlinejudge.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.onlinejudge.common.R;
 import com.example.onlinejudge.entity.Favorite;
@@ -16,7 +18,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static com.example.onlinejudge.utils.RedisConstants.CACHE_PROBLEM_KEY;
+import static com.example.onlinejudge.utils.RedisConstants.CACHE_PROBLEM_TTL;
 
 /**
  * <p>
