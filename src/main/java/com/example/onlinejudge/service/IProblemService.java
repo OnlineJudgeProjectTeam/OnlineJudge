@@ -28,4 +28,5 @@ public interface IProblemService extends IService<Problem> {
     public String getAnswer(Integer problemId,Integer language);
     public String getProblemDescription(Integer problemId);
     public String getProblemTemplate(Integer problemId,Integer language);
+    void isProblemfavorited(Problem problem);
 }

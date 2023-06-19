@@ -25,7 +25,7 @@ public interface ISolutionService extends IService<Solution> {
 
     Solution updateSolution(Integer solutionId,String content);
 
-    R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId);
+    R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId,Integer userId);
 
     R<String> likeSolution(Integer solutionId);
 }

@@ -175,6 +175,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             stringRedisTemplate.opsForHash().putAll(CACHE_PROBLEM_KEY + id, problemMap1);
             //设置有效期
             stringRedisTemplate.expire(CACHE_PROBLEM_KEY + id, CACHE_PROBLEM_TTL, TimeUnit.MINUTES);
+            isProblemfavorited(problem);
             return problem;
         }
         if (!problemMap.containsKey("id") || problemMap.get("id") == "" || problemMap.get("id") == "0") {
@@ -182,6 +183,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         }
         Problem problem = new Problem();
         BeanUtil.copyProperties(problemMap, problem);
+        isProblemfavorited(problem);
         return problem;
     }
 
@@ -506,5 +508,17 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 throw new IllegalStateException("Unexpected value: " + language);
         }
         return fileService.readFile(templatePath);
+    }
+
+    public void isProblemfavorited(Problem problem){
+        LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        favoriteLambdaQueryWrapper.eq(Favorite::getProblemId, problem.getId());
+        favoriteLambdaQueryWrapper.eq(Favorite::getUserId, UserHolder.getUser().getId());
+        Favorite one = favoriteService.getOne(favoriteLambdaQueryWrapper);
+        if(one!=null){
+            problem.setIsFavorite(Type.favorite);
+        }else{
+            problem.setIsFavorite(Type.notFavorite);
+        }
     }
 }

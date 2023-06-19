@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -66,11 +69,16 @@ public class SolutionController {
 
     }
 
-   @GetMapping("/get-solution-list")
-   @ApiOperation("获取题解列表")
-   R<PageInfo<SolutionDto>>GetSolutionList( @ApiParam("查询页数") Integer pageNum, @ApiParam("每页大小") Integer pageSize,
-                                            @ApiParam("需要展示的页数") Integer navSize, @ApiParam("问题id") Integer problemId){
-        R <PageInfo<SolutionDto>> solutionDtoPageInfo = solutionService.getSolutionList(pageNum,pageSize,navSize,problemId);
+
+    @PostMapping("/get-solution-list")
+    @ApiOperation("用户题解列表")
+    R<PageInfo<SolutionDto>> GetSolutionList(@RequestBody HashMap<String,Integer>map){
+        Integer pageNum = map.get("pageNum");
+        Integer pageSize = map.get("pageSize");
+        Integer navSize = map.get("navSize");
+        Integer problemId = map.get("problemId");
+        Integer userId = map.get("userId");
+        R<PageInfo<SolutionDto>> solutionDtoPageInfo = solutionService.getSolutionList(pageNum, pageSize, navSize, problemId,userId);
         return solutionDtoPageInfo;
-   }
+    }
 }

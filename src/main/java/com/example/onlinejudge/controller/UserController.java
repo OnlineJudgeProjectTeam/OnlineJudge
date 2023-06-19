@@ -131,4 +131,12 @@ public class UserController {
     public R<String> updatePassword(@RequestBody UserCodeDto userCodeDto){
         return userService.updatePassword(userCodeDto);
     }
+
+    @GetMapping("/me")
+    @ApiOperation("获取个人信息")
+    public R<User> getDetail(){
+        Integer id = UserHolder.getUser().getId();
+        User user = userService.getById(id);
+        return  R.success(user);
+    }
 }

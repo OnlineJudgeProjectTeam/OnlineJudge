@@ -201,7 +201,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public R<String> update(User user) {
         user.setId(UserHolder.getUser().getId());
+        // 更新数据库
         updateById(user);
+        // 删除缓存
+        stringRedisTemplate.delete(CACHE_USER_KEY + user.getId());
         return R.success("保存成功");
     }
 

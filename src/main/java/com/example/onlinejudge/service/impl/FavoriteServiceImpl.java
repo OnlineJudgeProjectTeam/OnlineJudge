@@ -51,6 +51,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
         if(favorite!=null){
             this.removeById(favorite.getId());
             problemService.update().setSql("favorites = favorites - 1").eq("id", problemId).update();
+            stringRedisTemplate.delete(CACHE_PROBLEM_KEY+problemId);
             return true;
         }
         favorite = new Favorite();
@@ -58,6 +59,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
         favorite.setProblemId(problemId);
         this.save(favorite);
         problemService.update().setSql("favorites = favorites + 1").eq("id", problemId).update();
+        stringRedisTemplate.delete(CACHE_PROBLEM_KEY+problemId);
         return true;
     }
 

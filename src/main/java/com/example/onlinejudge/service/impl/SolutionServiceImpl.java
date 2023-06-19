@@ -129,10 +129,13 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Override
-    public R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId) {
+    public R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId,Integer id) {
         LambdaQueryWrapper<Solution> solutionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (problemId != null) {
             solutionLambdaQueryWrapper.eq(Solution::getProblemId, problemId);
+        }
+        if(id != null) {
+            solutionLambdaQueryWrapper.eq(Solution::getUserId, id);
         }
         solutionLambdaQueryWrapper.orderByDesc(Solution::getCreatedTime);
         ArrayList<SolutionDto> solutionDtos = new ArrayList<>();
