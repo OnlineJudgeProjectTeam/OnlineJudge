@@ -61,7 +61,9 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
             ACData.setAcRate(new BigDecimal(0));
             return ACData;
         }
-        ACData.setAcRate(new BigDecimal(ACData.getAcNum()).divide(new BigDecimal(ACData.getSubmitNum()), 2, BigDecimal.ROUND_HALF_UP));
+        BigDecimal divide = new BigDecimal(ACData.getAcNum()).divide(new BigDecimal(ACData.getSubmitNum()), 2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal multiply = divide.multiply(new BigDecimal(100));
+        ACData.setAcRate(multiply);
         return ACData;
     }
 

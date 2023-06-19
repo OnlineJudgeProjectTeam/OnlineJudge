@@ -51,7 +51,6 @@ public class UserController {
             return R.error("该邮箱已被注册");
         }
        return userService.sendCode(email);
-
     }
 
     @GetMapping("/login-send")
