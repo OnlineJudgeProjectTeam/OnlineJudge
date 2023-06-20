@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -72,7 +73,7 @@ public class ProblemController {
 
     @PostMapping ("/submit")
     @ApiOperation("提交代码")
-    public R<RunDto> submit(@RequestBody SubmitDto submitDto) throws UnsupportedEncodingException {
+    public R<RunDto> submit(@RequestBody SubmitDto submitDto) throws IOException {
         RunDto result = null;
         Integer language = submitDto.getLanguage();
         Integer problemId =submitDto.getProblemId();

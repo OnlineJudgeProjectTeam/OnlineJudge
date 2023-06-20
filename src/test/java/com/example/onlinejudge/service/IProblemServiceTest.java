@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @SpringBootTest
@@ -24,7 +25,7 @@ public class IProblemServiceTest {
     }
 
     @Test
-    public void JavaJudgeTest() throws UnsupportedEncodingException {
+    public void JavaJudgeTest() throws IOException {
         String code="class Solution {\n" +
                 "    public int[] twoSum(int[] nums, int target) {\n" +
                 "        int n = nums.length;\n" +
@@ -45,7 +46,7 @@ public class IProblemServiceTest {
     }
 
     @Test
-    public void CJudgeTest(){
+    public void CJudgeTest() throws IOException {
         String code = "#include<stdio.h>\n" +
                 "int* twoSum(int* nums, int numsSize, int target, int* returnSize){\n" +
                 "    int i,j,q=0;\n" +
@@ -75,7 +76,7 @@ public class IProblemServiceTest {
     }
 
     @Test
-    public void CJudgeTest2(){
+    public void CJudgeTest2() throws IOException {
         String code="import java.util.HashMap;\n" +
                 "class Solution {\n" +
                 "    public int[] twoSum(int[] nums, int target) {\n" +

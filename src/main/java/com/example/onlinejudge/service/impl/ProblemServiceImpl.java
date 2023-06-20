@@ -354,8 +354,14 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     @Override
     public Boolean CCompile(String workingDirectory, Integer number) {
         try {
-            // 构建命令
-            ProcessBuilder processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number);
+            String os = System.getProperty("os.name");
+            ProcessBuilder processBuilder;
+            //Windows操作系统
+            if (os != null && os.toLowerCase().startsWith("windows")) {
+                processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number);
+            } else {//Linux操作系统
+                processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number,"-lm");
+            }
             // 设置工作目录
             processBuilder.directory(new File(workingDirectory));
             // 设置输出文件

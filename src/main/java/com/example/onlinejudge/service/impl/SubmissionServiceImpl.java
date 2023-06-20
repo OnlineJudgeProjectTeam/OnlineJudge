@@ -118,7 +118,10 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
             submissionDto.setOutput(output);
             submissionDtos.add(submissionDto);
         }
-        return new PageInfo<>(submissionDtos, navSize);
+        PageInfo<SubmissionDto> submissionDtoPageInfo = new PageInfo<>(submissionDtos, navSize);
+        long count = count(submissionLambdaQueryWrapper);
+        submissionDtoPageInfo.setTotal(count);
+        return submissionDtoPageInfo;
     }
 
     @Override

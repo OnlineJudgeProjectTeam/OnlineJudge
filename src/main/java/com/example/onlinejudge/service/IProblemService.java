@@ -5,6 +5,7 @@ import com.example.onlinejudge.entity.Problem;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -16,11 +17,11 @@ import java.io.UnsupportedEncodingException;
  * @since 2023-06-13
  */
 public interface IProblemService extends IService<Problem> {
-    public RunDto JavaJudge(String code, Integer userId, Integer problemId, Integer number) throws UnsupportedEncodingException;
+    public RunDto JavaJudge(String code, Integer userId, Integer problemId, Integer number) throws IOException;
     Problem QueryById(Integer id);
     Boolean JavaCompile(String workingDirectory,Integer number);
     Boolean JavaRun(String workingDirectory,Integer number);
-    public RunDto CJudge(String code,Integer userId,Integer problemId,Integer number);
+    public RunDto CJudge(String code,Integer userId,Integer problemId,Integer number) throws IOException;
     Boolean CCompile(String workingDirectory,Integer number);
     Boolean CRun(String workingDirectory,Integer number);
     public Problem getRandomProblem();
