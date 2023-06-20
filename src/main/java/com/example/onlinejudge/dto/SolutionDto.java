@@ -18,6 +18,8 @@ public class SolutionDto extends Solution {
     String content;
     @ApiModelProperty(value = "题目名称")
     String problemName;
+    String name;
+    String avatar;
 
     public SolutionDto(Solution solution) {
         this.setIsLike(solution.getIsLike());

@@ -146,6 +146,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             Integer userId = solution.getUserId();
             User user = userService.QueryById(userId);
             SolutionDto solutionDto = new SolutionDto(solution);
+            solutionDto.setName(user.getName());
+            solutionDto.setAvatar(user.getAvatar());
             Problem problem = problemMap.get(solution.getProblemId());
             solutionDto.setProblemName(problem.getName());
             String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/solution/"+solution.getFolderName()+ "/solution.md";

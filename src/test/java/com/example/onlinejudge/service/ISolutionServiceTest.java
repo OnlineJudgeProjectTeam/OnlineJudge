@@ -76,7 +76,8 @@ public class ISolutionServiceTest {
         Integer pageSize = 1;
         Integer pageNum = 1;
         Integer navSize = 3;
-        R<PageInfo<SolutionDto>> solutionList = solutionService.getSolutionList(pageNum,pageSize,navSize, problemId);
+        Integer userId = 1;
+        R<PageInfo<SolutionDto>> solutionList = solutionService.getSolutionList(pageNum,pageSize,navSize, problemId, userId);
         System.out.println(solutionList);
     }
 }
