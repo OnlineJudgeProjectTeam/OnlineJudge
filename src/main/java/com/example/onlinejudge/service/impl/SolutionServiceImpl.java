@@ -130,6 +130,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
     @Override
     public R<PageInfo<SolutionDto>> getSolutionList(Integer pageNum, Integer pageSize, Integer navSize, Integer problemId,Integer id) {
+        HashMap<Integer, Problem> problemMap = problemMapper.getProblemMap();
+        PageHelper.startPage(pageNum, pageSize);
         LambdaQueryWrapper<Solution> solutionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (problemId != null) {
             solutionLambdaQueryWrapper.eq(Solution::getProblemId, problemId);
@@ -138,10 +140,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             solutionLambdaQueryWrapper.eq(Solution::getUserId, id);
         }
         solutionLambdaQueryWrapper.orderByDesc(Solution::getCreatedTime);
-        ArrayList<SolutionDto> solutionDtos = new ArrayList<>();
-        HashMap<Integer, Problem> problemMap = problemMapper.getProblemMap();
-        PageHelper.startPage(pageNum, pageSize);
         List<Solution> list = list(solutionLambdaQueryWrapper);
+        ArrayList<SolutionDto> solutionDtos = new ArrayList<>();
         for(Solution solution:list){
             Integer userId = solution.getUserId();
             User user = userService.QueryById(userId);
@@ -158,6 +158,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             solutionDtos.add(solutionDto);
         }
         PageInfo<SolutionDto> solutionDtoPageInfo = new PageInfo<>(solutionDtos, navSize);
+        long count = count(solutionLambdaQueryWrapper);
+        solutionDtoPageInfo.setTotal(count);
         return R.success(solutionDtoPageInfo);
     }
 

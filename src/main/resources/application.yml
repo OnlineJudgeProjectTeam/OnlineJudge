@@ -2,7 +2,7 @@ spring:
   application:
     name: DocumentRetrievalManagementSystem
   profiles:
-    active: dev
+    active: prod
   mail:
     default-encoding: UTF-8
     host: smtp.163.com
@@ -29,9 +29,10 @@ aliyun:
     endpoint: https://oss-cn-hangzhou.aliyuncs.com
 
 
+
 server:
   port: 8070
-  address: 0.0.0.0
+#  address: 0.0.0.0
 
 #mybatis:
 #  mapper-locations: classpath:mappers/*xml

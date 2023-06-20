@@ -64,18 +64,19 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
     }
 
     @Override
-    public PageInfo<FavoriteDto> getFavoriteList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize){
+    public PageInfo<Problem> getFavoriteList(Integer userId, Integer pageNum, Integer pageSize, Integer navSize){
         PageHelper.startPage(pageNum,pageSize);
         LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
         favoriteLambdaQueryWrapper.eq(Favorite::getUserId,userId);
         List<Favorite> list = this.list(favoriteLambdaQueryWrapper);
-        ArrayList<FavoriteDto> favoriteDtos = new ArrayList<>();
+        ArrayList<Problem> problems = new ArrayList<>();
         for (Favorite favorite : list) {
             Problem problem = problemService.getById(favorite.getProblemId());
-            FavoriteDto favoriteDto = new FavoriteDto(favorite);
-            favoriteDto.setProblem(problem);
-            favoriteDtos.add(favoriteDto);
+            problems.add(problem);
         }
-        return new PageInfo<>(favoriteDtos,navSize);
+        PageInfo<Problem> problemPageInfo = new PageInfo<>(problems, navSize);
+        long count = count(favoriteLambdaQueryWrapper);
+        problemPageInfo.setTotal(count);
+        return problemPageInfo;
     }
 }

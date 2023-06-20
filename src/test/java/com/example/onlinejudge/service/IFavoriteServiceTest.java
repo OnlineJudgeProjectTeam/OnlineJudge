@@ -2,6 +2,7 @@ package com.example.onlinejudge.service;
 
 import com.example.onlinejudge.entity.Favorite;
 import com.example.onlinejudge.entity.FavoriteDto;
+import com.example.onlinejudge.entity.Problem;
 import com.github.pagehelper.PageInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,7 @@ public class IFavoriteServiceTest {
         int pageNum = 1;
         int pageSize = 1;
         int navSize = 1;
-        PageInfo<FavoriteDto> favoriteList = favoriteService.getFavoriteList(userId, pageNum, pageSize, navSize);
+        PageInfo<Problem> favoriteList = favoriteService.getFavoriteList(userId, pageNum, pageSize, navSize);
         System.out.println(favoriteList);
     }
 }

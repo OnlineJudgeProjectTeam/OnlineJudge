@@ -1,10 +1,9 @@
 package com.example.onlinejudge.entity;
 
+import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -19,7 +18,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author diandianjun
- * @since 2023-06-19
+ * @since 2023-06-20
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -49,13 +48,16 @@ public class Submission implements Serializable {
     private String difficulty;
 
     @ApiModelProperty(value = "时间消耗，单位是ms")
-    private BigInteger timeCost;
+    private Long timeCost;
 
     @ApiModelProperty(value = "内存消耗，单位是KB")
-    private BigInteger memoryCost;
+    private Long memoryCost;
 
-    @ApiModelProperty(value = "记录代码的文件夹名")
     private String folderName;
+
+    private BigDecimal timeBeat;
+
+    private BigDecimal memoryBeat;
 
 
 }

@@ -26,5 +26,7 @@ public class SubmissionDto extends Submission {
         this.setMemoryCost(submission.getMemoryCost());
         this.setTimeCost(submission.getTimeCost());
         this.setFolderName(submission.getFolderName());
+        this.setTimeBeat(submission.getTimeBeat());
+        this.setMemoryBeat(submission.getMemoryBeat());
     }
 }

@@ -66,7 +66,7 @@ public class SubmissionController {
 
     @GetMapping("/get-submission-list")
     @ApiOperation("获取做题记录列表")
-    public R<PageInfo<SubmissionDto>> getSubmissionList(@ApiParam("用户id") Integer userId,@ApiParam("第几页") Integer pageNum,@ApiParam("一页几条数据") Integer pageSize,@ApiParam("导航页个数") Integer navSize,@ApiParam("编程语言") Integer language,@ApiParam("难度") String difficulty,@ApiParam("是否通过") Integer pass,@ApiParam("起始时间") String startTime,@ApiParam("结束时间") String endTime,Integer problemId){
+    public R<PageInfo<SubmissionDto>> getSubmissionList(@ApiParam("第几页") Integer pageNum,@ApiParam("一页几条数据") Integer pageSize,@ApiParam("导航页个数") Integer navSize,@ApiParam("编程语言") Integer language,@ApiParam("难度") String difficulty,@ApiParam("是否通过") Integer pass,@ApiParam("起始时间") String startTime,@ApiParam("结束时间") String endTime,Integer problemId){
         LocalDateTime startLocalDateTime = null;
         LocalDateTime endLocalDateTime = null;
         if(startTime!=null&&!startTime.equals("")){
@@ -77,6 +77,7 @@ public class SubmissionController {
             DateTime end = DateTime.parse(endTime);
             endLocalDateTime = Instant.ofEpochMilli(end.getMillis()).atZone(end.getZone().toTimeZone().toZoneId()).toLocalDateTime();
         }
+        Integer userId = UserHolder.getUser().getId();
         PageInfo<SubmissionDto> submissionList = submissionService.getSubmissionList(userId, pageNum, pageSize, navSize, language, difficulty, pass, startLocalDateTime, endLocalDateTime,problemId);
         return R.success(submissionList);
     }

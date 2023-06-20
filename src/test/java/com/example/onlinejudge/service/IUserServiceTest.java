@@ -55,4 +55,10 @@ public class IUserServiceTest {
         System.out.println(user);
     }
 
+    @Test
+    public void PasswordTest(){
+        System.out.println(PasswordEncoder.encode("1234"));
+        System.out.println(PasswordEncoder.matches("3152ltt4wbrrs5sxvosv@12df906b6db13909ddb2e009849ffe48","1234"));
+    }
+
 }
