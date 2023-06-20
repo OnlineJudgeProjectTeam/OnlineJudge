@@ -68,7 +68,7 @@ public class EverydayProblemServiceImpl extends ServiceImpl<EverydayProblemMappe
                 stringRedisTemplate.opsForHash().putAll(CACHE_EVERYDAY_PROBLEM_KEY+"today",everydayProblemMap1);
                 //设置有效期
                 stringRedisTemplate.expire(CACHE_EVERYDAY_PROBLEM_KEY+"today",CACHE_EVERYDAY_PROBLEM_TTL, TimeUnit.MINUTES);
-                problemService.isProblemfavorited(randomProblem);
+                problemService.isProblemFavorite(randomProblem);
                 return randomProblem;
             }else{
                 //存到redis中

@@ -175,7 +175,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             stringRedisTemplate.opsForHash().putAll(CACHE_PROBLEM_KEY + id, problemMap1);
             //设置有效期
             stringRedisTemplate.expire(CACHE_PROBLEM_KEY + id, CACHE_PROBLEM_TTL, TimeUnit.MINUTES);
-            isProblemfavorited(problem);
+            isProblemFavorite(problem);
             return problem;
         }
         if (!problemMap.containsKey("id") || problemMap.get("id") == "" || problemMap.get("id") == "0") {
@@ -183,7 +183,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         }
         Problem problem = new Problem();
         BeanUtil.copyProperties(problemMap, problem);
-        isProblemfavorited(problem);
+        isProblemFavorite(problem);
         return problem;
     }
 
@@ -510,7 +510,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         return fileService.readFile(templatePath);
     }
 
-    public void isProblemfavorited(Problem problem){
+    public void isProblemFavorite(Problem problem){
         LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
         favoriteLambdaQueryWrapper.eq(Favorite::getProblemId, problem.getId());
         favoriteLambdaQueryWrapper.eq(Favorite::getUserId, UserHolder.getUser().getId());
