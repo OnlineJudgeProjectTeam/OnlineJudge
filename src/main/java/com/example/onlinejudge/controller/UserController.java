@@ -139,4 +139,11 @@ public class UserController {
         User user = userService.getById(id);
         return  R.success(user);
     }
+
+    @GetMapping("/u/{id}")
+    @ApiOperation("获取他人信息")
+    public R<User> getOtherDetail(@PathVariable Integer id){
+        User user = userService.getById(id);
+        return R.success(user);
+   }
 }
