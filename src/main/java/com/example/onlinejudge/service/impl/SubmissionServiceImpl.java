@@ -133,7 +133,7 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
         long total = count(submissionLambdaQueryWrapper);
         if (total == 0)
             return new BigDecimal(0);
-        submissionLambdaQueryWrapper.ge(Submission::getExecutionTime, timeCost);
+        submissionLambdaQueryWrapper.ge(Submission::getTimeCost, timeCost);
         long better = count(submissionLambdaQueryWrapper);
         return new BigDecimal(better).divide(new BigDecimal(total), 2, BigDecimal.ROUND_HALF_UP);
     }

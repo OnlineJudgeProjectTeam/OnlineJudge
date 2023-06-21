@@ -1,5 +1,10 @@
 # 基于openjdk 镜像
-FROM openjdk:19
+FROM openjdk:8-jdk-alpine
+# 更改镜像源
+RUN echo "https://mirrors.aliyun.com/alpine/v3.7/main/" > /etc/apk/repositories
+# 安装GCC和必要的构建工具
+# 安装gcc
+RUN apk add --no-cache gcc musl-dev
 # 将本地文件夹挂在到当前容器
 VOLUME /usr/local/java/JavaProject/OnlineJudge/docker-project
 # 复制文件到容器

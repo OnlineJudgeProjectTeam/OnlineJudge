@@ -19,8 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * <p>
@@ -66,19 +71,25 @@ public class SubmissionController {
 
     @GetMapping("/get-submission-list")
     @ApiOperation("获取做题记录列表")
-    public R<PageInfo<SubmissionDto>> getSubmissionList(@ApiParam("第几页") Integer pageNum,@ApiParam("一页几条数据") Integer pageSize,@ApiParam("导航页个数") Integer navSize,@ApiParam("编程语言") Integer language,@ApiParam("难度") String difficulty,@ApiParam("是否通过") Integer pass,@ApiParam("起始时间") String startTime,@ApiParam("结束时间") String endTime,Integer problemId){
+    public R<PageInfo<SubmissionDto>> getSubmissionList(@ApiParam("第几页") Integer pageNum,@ApiParam("一页几条数据") Integer pageSize,@ApiParam("导航页个数") Integer navSize,@ApiParam("编程语言") Integer language,@ApiParam("难度") String difficulty,@ApiParam("是否通过") Integer pass,@ApiParam("起始时间") String startTime,@ApiParam("结束时间") String endTime,Integer problemId) throws ParseException {
         LocalDateTime startLocalDateTime = null;
         LocalDateTime endLocalDateTime = null;
-        if(startTime!=null&&!startTime.equals("")){
-            DateTime start = DateTime.parse(startTime);
-            startLocalDateTime = Instant.ofEpochMilli(start.getMillis()).atZone(start.getZone().toTimeZone().toZoneId()).toLocalDateTime();
-        }
-        if(endTime!=null&&!endTime.equals("")){
-            DateTime end = DateTime.parse(endTime);
-            endLocalDateTime = Instant.ofEpochMilli(end.getMillis()).atZone(end.getZone().toTimeZone().toZoneId()).toLocalDateTime();
-        }
+        startLocalDateTime = getLocalDateTime(startTime, startLocalDateTime);
+        endLocalDateTime = getLocalDateTime(endTime, endLocalDateTime);
         Integer userId = UserHolder.getUser().getId();
         PageInfo<SubmissionDto> submissionList = submissionService.getSubmissionList(userId, pageNum, pageSize, navSize, language, difficulty, pass, startLocalDateTime, endLocalDateTime,problemId);
         return R.success(submissionList);
+    }
+
+    private LocalDateTime getLocalDateTime(String time, LocalDateTime localDateTime) throws ParseException {
+        if(time !=null&&!time.equals("")){
+            time = time.substring(4, time.indexOf("GMT")-1);
+            SimpleDateFormat sf = new SimpleDateFormat("MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
+            Date date = sf.parse(time);
+            Instant instant = date.toInstant();
+            ZoneId zoneId = ZoneId.systemDefault();
+            localDateTime = instant.atZone(zoneId).toLocalDateTime();
+        }
+        return localDateTime;
     }
 }

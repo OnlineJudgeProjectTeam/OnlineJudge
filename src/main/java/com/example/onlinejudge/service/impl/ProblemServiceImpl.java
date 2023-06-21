@@ -108,7 +108,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setMemoryCost(-1L);
             submissionService.save(submission);
             String message = fileService.readFile(userCodePath + "/stderr.txt");
-            user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+            user.setAcRate(divide.multiply(new BigDecimal(100)));
             userService.update(user);
             return new RunDto(message, -1L, -1L, new BigDecimal("0"), new BigDecimal("0"));
         }
@@ -122,7 +123,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setTimeCost(-1L);
             submission.setMemoryCost(-1L);
             submissionService.save(submission);
-            user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+            user.setAcRate(divide.multiply(new BigDecimal(100)));
             userService.update(user);
             return new RunDto(message, -1L, -1L, new BigDecimal("0"), new BigDecimal("0"));
         } else {
@@ -131,13 +133,15 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setPass(Type.notPass);
             if (timeCost > problem.getTimeLimit()) {
                 submissionService.save(submission);
-                user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+                BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+                user.setAcRate(divide.multiply(new BigDecimal(100)));
                 userService.update(user);
                 return new RunDto("Time Limit Exceeded", timeCost, memoryCost, new BigDecimal("0"), new BigDecimal("0"));
             }
             if (memoryCost > problem.getMemoryLimit()) {
                 submissionService.save(submission);
-                user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+                BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+                user.setAcRate(divide.multiply(new BigDecimal(100)));
                 userService.update(user);
                 return new RunDto("Memory Limit Exceeded", timeCost, memoryCost, new BigDecimal("0"), new BigDecimal("0"));
             }
@@ -151,7 +155,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setTimeBeat(timeBeat);
             submission.setMemoryBeat(memoryBeat);
             submissionService.save(submission);
-            user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+            user.setAcRate(divide.multiply(new BigDecimal(100)));
             userService.update(user);
             return new RunDto(message, timeCost, memoryCost, timeBeat, memoryBeat);
         }
@@ -300,7 +305,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setTimeCost(-1L);
             submission.setMemoryCost(-1L);
             submissionService.save(submission);
-            user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+            user.setAcRate(divide.multiply(new BigDecimal(100)));
             userService.update(user);
             String message = fileService.readFile(userCodePath + "/stderr.txt");
             return new RunDto(message, -1L, -1L, new BigDecimal("0"), new BigDecimal("0"));
@@ -316,7 +322,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setTimeCost(-1L);
             submission.setMemoryCost(-1L);
             submissionService.save(submission);
-            user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+            user.setAcRate(divide.multiply(new BigDecimal(100)));
             userService.update(user);
             return new RunDto(message, -1L, -1L, new BigDecimal("0"), new BigDecimal("0"));
         } else {
@@ -325,13 +332,15 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             submission.setMemoryCost(memoryCost);
             if (timeCost > problem.getTimeLimit()) {
                 submissionService.save(submission);
-                user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+                BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+                user.setAcRate(divide.multiply(new BigDecimal(100)));
                 userService.update(user);
                 return new RunDto("Time Limit Exceeded", timeCost, memoryCost, new BigDecimal("0"), new BigDecimal("0"));
             }
             if (memoryCost > problem.getMemoryLimit()) {
                 submissionService.save(submission);
-                user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+                BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+                user.setAcRate(divide.multiply(new BigDecimal(100)));
                 userService.update(user);
                 return new RunDto("Memory Limit Exceeded", timeCost, memoryCost, new BigDecimal("0"), new BigDecimal("0"));
             }
@@ -344,7 +353,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             BigDecimal memoryBeat = submissionService.getMemoryBeat(problemId, Type.c, memoryCost);
             submission.setTimeBeat(timeBeat);
             submission.setMemoryBeat(memoryBeat);
-            user.setAcRate(new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal divide = new BigDecimal(acNum).divide(new BigDecimal(submitNum), 2, BigDecimal.ROUND_HALF_UP);
+            user.setAcRate(divide.multiply(new BigDecimal(100)));
             userService.update(user);
             submissionService.save(submission);
             return new RunDto(message, timeCost, memoryCost, timeBeat, memoryBeat);
@@ -360,7 +370,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             if (os != null && os.toLowerCase().startsWith("windows")) {
                 processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number);
             } else {//Linux操作系统
-                processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number,"-lm");
+                processBuilder = new ProcessBuilder("gcc", "./Test" + number + ".c", "-o", "Test" + number, "-lm");
             }
             // 设置工作目录
             processBuilder.directory(new File(workingDirectory));

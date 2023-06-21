@@ -68,6 +68,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
         PageHelper.startPage(pageNum,pageSize);
         LambdaQueryWrapper<Favorite> favoriteLambdaQueryWrapper = new LambdaQueryWrapper<>();
         favoriteLambdaQueryWrapper.eq(Favorite::getUserId,userId);
+        favoriteLambdaQueryWrapper.orderByDesc(Favorite::getId);
         List<Favorite> list = this.list(favoriteLambdaQueryWrapper);
         ArrayList<Problem> problems = new ArrayList<>();
         for (Favorite favorite : list) {
