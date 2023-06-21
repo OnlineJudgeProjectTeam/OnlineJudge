@@ -21,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -273,10 +271,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public PageInfo<User> getRank(Integer pageNum, Integer pageSize, Integer navSize) {
+    public PageInfo<User> getRank(Integer pageNum, Integer pageSize, Integer navSize, Integer order) {
         PageHelper.startPage(pageNum,pageSize);
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        userLambdaQueryWrapper.orderByDesc(User::getAcRate);
+        if(order==1) {
+            userLambdaQueryWrapper.orderByDesc(User::getAcNum);
+        }else{
+            userLambdaQueryWrapper.orderByDesc(User::getAcRate);
+        }
         List<User> list = list(userLambdaQueryWrapper);
         for(User user:list){
             user.setPassword(null);

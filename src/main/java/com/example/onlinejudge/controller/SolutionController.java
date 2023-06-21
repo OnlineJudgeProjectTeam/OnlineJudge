@@ -81,4 +81,11 @@ public class SolutionController {
         R<PageInfo<SolutionDto>> solutionDtoPageInfo = solutionService.getSolutionList(pageNum, pageSize, navSize, problemId,userId);
         return solutionDtoPageInfo;
     }
+
+    @GetMapping("/get-solution/{id}")
+    @ApiOperation("获取题解")
+    R<SolutionDto> getSolution(@ApiParam("题解id") @PathVariable("id") Integer id){
+        SolutionDto solutionDto = solutionService.getSolution(id);
+        return R.success(solutionDto);
+    }
 }

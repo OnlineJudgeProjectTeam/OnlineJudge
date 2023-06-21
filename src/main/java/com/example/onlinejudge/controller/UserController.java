@@ -109,8 +109,8 @@ public class UserController {
     }
 
     @GetMapping("/rank")
-    public R<PageInfo<User>> getRank(Integer pageNum,Integer pageSize,Integer navSize){
-        PageInfo<User> rank = userService.getRank(pageNum, pageSize, navSize);
+    public R<PageInfo<User>> getRank(Integer pageNum,Integer pageSize,Integer navSize,Integer order){
+        PageInfo<User> rank = userService.getRank(pageNum, pageSize, navSize,order);
         return R.success(rank);
     }
 

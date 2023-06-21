@@ -6,9 +6,6 @@ import com.example.onlinejudge.dto.UserDto;
 import com.example.onlinejudge.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -35,5 +32,5 @@ public interface IUserService extends IService<User> {
 
     R<String> logout();
 
-    PageInfo<User> getRank(Integer pageNum, Integer pageSize, Integer navSize);
+    PageInfo<User> getRank(Integer pageNum, Integer pageSize, Integer navSize, Integer order);
 }

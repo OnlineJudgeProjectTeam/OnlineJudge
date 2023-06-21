@@ -192,6 +192,23 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         return R.success("成功");
     }
 
+    @Override
+    public SolutionDto getSolution(Integer solutionId) {
+        Solution solution = getById(solutionId);
+        SolutionDto solutionDto = new SolutionDto(solution);
+        User user = userService.QueryById(solution.getUserId());
+        solutionDto.setName(user.getName());
+        solutionDto.setAvatar(user.getAvatar());
+        Problem problem = problemService.getById(solution.getProblemId());
+        solutionDto.setProblemName(problem.getName());
+        String path = userFilePath + "/" + user.getUsername() + "/" + problem.getName()+"/solution/"+solution.getFolderName()+ "/solution.md";
+        String content = fileService.readFile(path);
+        isSolutionLiked(solution);
+        solutionDto.setIsLike(solution.getIsLike());
+        solutionDto.setContent(content);
+        return solutionDto;
+    }
+
     private void isSolutionLiked(Solution solution){
         // 1.获取登录用户
         User user = UserHolder.getUser();
